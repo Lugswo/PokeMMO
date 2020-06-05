@@ -1,0 +1,39 @@
+{
+    "name": "player",
+    "components": [
+        {
+            "name": "Transform",
+            "pos": [
+                "x",
+                0.8159091472625732,
+                "y",
+                -0.8992205858230591,
+                "z",
+                0.0
+            ],
+            "scale": [
+                "x",
+                0.5,
+                "y",
+                0.5,
+                "z",
+                1.0
+            ],
+            "rotation": 0.0
+        },
+        {
+            "name": "Sprite",
+            "filepath": "../Textures/Pokemon/Zekrom.png"
+        },
+        {
+            "name": "Animation",
+            "row": 6,
+            "col": 9,
+            "numFrames": 50,
+            "frameTime": 0.10000000149011612
+        },
+        {
+            "name": "Player"
+        }
+    ]
+}
