@@ -1,11 +1,11 @@
 {
-    "name": "player",
+    "name": "verizon",
     "components": [
         {
             "name": "Transform",
             "pos": [
-                -1.8974195718765259,
-                -0.027911614626646043,
+                0.0,
+                0.0,
                 0.0
             ],
             "scale": [
@@ -17,18 +17,14 @@
         },
         {
             "name": "Sprite",
-            "filepath": "../Textures/Player/mPlayerRun.png"
+            "filepath": "../Textures/Pokemon/Virizion.png"
         },
         {
             "name": "Animation",
-            "row": 4,
-            "col": 3,
-            "numFrames": 3,
-            "frameTime": 0.4000000059604645,
-            "startRow": 1
-        },
-        {
-            "name": "Player"
+            "row": 11,
+            "col": 9,
+            "numFrames": 93,
+            "frameTime": 0.10000000149011612
         }
     ]
 }

@@ -8,6 +8,7 @@
 #include <rttr/variant.h>
 #include <fstream>
 #include <filewritestream.h>
+#include <document.h>
 
 class Serializer
 {
@@ -17,6 +18,7 @@ public:
 
 private:
   static void Serialize(rapidjson::PrettyWriter<rapidjson::FileWriteStream>& w, rttr::variant& r);
+  static void Parse(rttr::variant& v, const rapidjson::Value& comp, rttr::variant& cVar, const rttr::property& p);
 
   template <typename T>
   static void Serialize(rapidjson::PrettyWriter<rapidjson::FileWriteStream>& w, rttr::variant& r)

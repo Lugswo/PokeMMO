@@ -37,9 +37,9 @@ std::vector<float> Animation::CalculateUV()
 
 void Animation::NextFrame()
 {
-  if (++currFrame >= numFrames)
+  if (++currFrame >= endFrame)
   {
-    currFrame = 0;
+    currFrame = startRow * col;
   }
 
   auto uvs = CalculateUV();
@@ -48,7 +48,7 @@ void Animation::NextFrame()
 
 void Animation::ResetAnimation()
 {
-  currFrame = 0;
+  currFrame = startRow * col;
   currTime = frameTime;
 
   auto uvs = CalculateUV();
@@ -58,7 +58,7 @@ void Animation::ResetAnimation()
 
 void Animation::Init()
 {
-  compName = "Animation";
+  SetName("Animation");
   sprite = GetComponent(Sprite, parent);
 
   row = col = 1;
@@ -72,7 +72,33 @@ void Animation::Init()
   fHeight = height;
 
   numFrames = row * col;
-  currFrame = 0;
+  currFrame = startRow = 0;
+  endFrame = numFrames + (startRow * col);
+
+  auto uvs = CalculateUV();
+  sprite->ChangeUV(uvs);
+}
+
+void Animation::ParseInit()
+{
+  SetName("Animation");
+  sprite = GetComponent(Sprite, parent);
+  currTime = frameTime;
+
+  width = sprite->GetWidth();
+  height = sprite->GetHeight();
+
+  fWidth = width / col;
+  fHeight = height / row;
+
+  Transform* trans = GetComponent(Transform, parent);
+  trans->SetTextureScale((float)fWidth / (float)fHeight);
+
+  currFrame = startRow * col;
+  endFrame = numFrames + (startRow * col);
+
+  auto uvs = CalculateUV();
+  sprite->ChangeUV(uvs);
 }
 
 void Animation::Update(float dt)
@@ -108,13 +134,6 @@ RTTR_REGISTRATION
       .property("col", &Animation::col)
       .property("numFrames", &Animation::numFrames)
       .property("frameTime", &Animation::frameTime)
-
-      //.property_readonly("children", &node::get_children) // a read-only property; so not set possible
-      //.method("set_visible", &node::set_visible)
-      //(
-      //    default_arguments(true),              // the default value for 'cascade'
-      //    parameter_names("visible", "cascade") // provide the names of the parameter; optional, but might be useful for clients
-      //)
-      //.method("render", &node::render)
+      .property("startRow", &Animation::startRow)
       ;
 }

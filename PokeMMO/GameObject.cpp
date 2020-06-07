@@ -27,6 +27,13 @@ void GameObject::Update(float dt)
   }
 }
 
+void GameObject::AddComponent(Component* c)
+{
+  c->SetParent(this);
+  c->ParseInit();
+  components.push_back(c);
+}
+
 Component* GameObject::GetComponent(const std::string& str)
 {
   for (auto c : components)

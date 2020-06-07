@@ -8,6 +8,7 @@ class Animation : public Component
 {
 public:
   void Init() override;
+  void ParseInit() override;
   void Update(float dt) override;
   void Shutdown() override;
 
@@ -19,12 +20,12 @@ public:
   void SetRows(unsigned r)
   {
     row = r;
-    numFrames = row * col;
 
     fHeight = (float)height / (float)row;
 
     float aspect = (float)fWidth / (float)fHeight;
     sprite->SetAspect(aspect);
+    endFrame = numFrames + (startRow * col);
 
     ResetAnimation();
   }
@@ -37,12 +38,12 @@ public:
   void SetCols(unsigned r)
   {
     col = r;
-    numFrames = row * col;
 
     fWidth = (float)width / (float)col;
 
     float aspect = (float)fWidth / (float)fHeight;
     sprite->SetAspect(aspect);
+    endFrame = numFrames + (startRow * col);
 
     ResetAnimation();
   }
@@ -67,15 +68,28 @@ public:
     frameTime = t;
   }
 
+  unsigned GetStartRow() const
+  {
+    return startRow;
+  }
+
+  void SetStartRow(unsigned u)
+  {
+    startRow = u;
+    endFrame = numFrames + (startRow * col);
+  }
+
 private:
   void ResetAnimation();
   std::vector<float> CalculateUV();
   void NextFrame();
 
-  unsigned row, col, numFrames, currFrame;
+  unsigned row, col, numFrames, currFrame, endFrame;
 
   float frameTime, currTime;
   unsigned width, height, fWidth, fHeight;
+
+  unsigned startRow;
 
   Sprite* sprite;
 

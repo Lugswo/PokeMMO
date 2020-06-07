@@ -52,6 +52,9 @@
     <Filter Include="Source Files\Systems\Serializer">
       <UniqueIdentifier>{7366d20d-190e-4343-bfe0-e501fcd1e637}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Systems\Editor">
+      <UniqueIdentifier>{ee13d2d0-4651-4d4f-bc11-d476a1bd5475}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -129,6 +132,15 @@
     <ClCompile Include="Serializer.cpp">
       <Filter>Source Files\Systems\Serializer</Filter>
     </ClCompile>
+    <ClCompile Include="Editor.cpp">
+      <Filter>Source Files\Systems\Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lib\imgui\examples\imgui_impl_glfw.cpp">
+      <Filter>Source Files\External</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lib\imgui\examples\imgui_impl_opengl3.cpp">
+      <Filter>Source Files\External</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine.h">
@@ -187,6 +199,9 @@
     </ClInclude>
     <ClInclude Include="Serializer.h">
       <Filter>Source Files\Systems\Serializer</Filter>
+    </ClInclude>
+    <ClInclude Include="Editor.h">
+      <Filter>Source Files\Systems\Editor</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -13,6 +13,7 @@ class Sprite : public Component
 {
 public:
   void Init() override;
+  void ParseInit() override;
   void Update(float dt) override;
   void Shutdown() override;
 

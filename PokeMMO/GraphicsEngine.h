@@ -21,6 +21,7 @@ public:
   void AddToQueue(const Sprite* s);
 
   static GraphicsEngine* GetInstance();
+  Window* GetWindow();
 
   bool Closed();
 

@@ -1,6 +1,9 @@
 #include "GraphicsEngine.h"
 
 #include <iostream>
+#include <imgui.h>
+#include <examples/imgui_impl_glfw.h>
+#include <examples/imgui_impl_opengl3.h>
 
 #include "Sprite.h"
 #include "stb_image.h"
@@ -23,6 +26,11 @@ GraphicsEngine* GraphicsEngine::GetInstance()
   }
 
   return instance;
+}
+
+Window* GraphicsEngine::GetWindow()
+{
+  return window;
 }
 
 bool GraphicsEngine::Closed()
@@ -68,6 +76,9 @@ void GraphicsEngine::Update(float dt)
 
   Draw();
 
+  ImGui::Render();
+  ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
   glfwSwapBuffers(window->GetWindow());
 }
 
@@ -85,8 +96,6 @@ void GraphicsEngine::DrawSprite(const Sprite* s)
 
   s->GetShader()->Uniform(s->GetTransform()->GetMatrix(), "transform");
   shader->Uniform(0, "tex");
-
-  s->GetTexture()->GetAspect();
 
   glActiveTexture(GL_TEXTURE0);
   glBindTexture(GL_TEXTURE_2D, s->GetTexture()->GetTexture());

@@ -5,12 +5,19 @@
 
 void Transform::Init()
 {
-  compName = "Transform";
+  SetName("Transform");
 
   mat = glm::mat4(1.f);
   scale = glm::vec3(1.f);
   rot = 0.f;
   pos = glm::vec3(0.f);
+
+  tScale = glm::vec3(1.f);
+}
+
+void Transform::ParseInit()
+{
+  SetName("Transform");
 
   tScale = glm::vec3(1.f);
 }
@@ -32,6 +39,8 @@ const glm::mat4& Transform::GetMatrix()
     s = glm::scale(s, tScale);
 
     mat = t * r * s;
+
+    dirty = false;
   }
 
   return mat;

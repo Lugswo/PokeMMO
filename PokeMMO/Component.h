@@ -10,6 +10,7 @@ class Component
 {
 public:
   virtual void Init();
+  virtual void ParseInit();
   virtual void Update(float dt);
   virtual void Shutdown();
 
@@ -35,7 +36,7 @@ public:
 protected:
   GameObject* parent;
   std::string compName;
-  std::string name = "Nothing";
+  std::string name;
 
 private:
 

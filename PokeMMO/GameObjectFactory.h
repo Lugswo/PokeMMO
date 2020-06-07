@@ -34,6 +34,8 @@ public:
     playerRef = nullptr;
   }
 
+  GameObject* FindObject(const std::string& name);
+
 private:
   static GameObjectFactory* instance;
   std::vector<GameObject*> objects;

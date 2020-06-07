@@ -9,6 +9,7 @@ class Transform : public Component
 {
 public:
   void Init() override;
+  void ParseInit() override;
   void Shutdown() override;
 
   float GetRotation() const

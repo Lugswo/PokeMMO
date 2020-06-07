@@ -1,5 +1,7 @@
 #include "Player.h"
 
+#include <rttr/registration>
+
 #include "InputManager.h"
 #include "GameObjectFactory.h"
 
@@ -10,7 +12,15 @@ namespace Movement
 
 void Player::Init()
 {
-  compName = "Player";
+  SetName("Player");
+
+  trans = GetComponent(Transform, parent);
+  GameObjectFactory::GetInstance()->SetPlayerRef(parent);
+}
+
+void Player::ParseInit()
+{
+  SetName("Player");
 
   trans = GetComponent(Transform, parent);
   GameObjectFactory::GetInstance()->SetPlayerRef(parent);
@@ -42,4 +52,15 @@ void Player::Update(float dt)
 void Player::Shutdown()
 {
   GameObjectFactory::GetInstance()->UnsetPlayerRef();
+}
+
+RTTR_REGISTRATION
+{
+    using namespace rttr;
+    registration::class_<Player>("Player")
+        .constructor<>()
+        (
+
+        )
+      ;
 }

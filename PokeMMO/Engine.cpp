@@ -2,6 +2,9 @@
 
 #include <thread>
 #include <iostream>
+#include <imgui.h>
+#include <examples/imgui_impl_glfw.h>
+#include <examples/imgui_impl_opengl3.h>
 
 #include "GraphicsEngine.h"
 #include "Logger.h"
@@ -11,6 +14,7 @@
 #include "Camera.h"
 #include "InputManager.h"
 #include "Serializer.h"
+#include "Editor.h"
 
   //  temporary adds
 #include "Sprite.h"
@@ -33,15 +37,27 @@ void Engine::Init()
   L::Init(TL::VERBOSE);
   L::Log(TL::INFO, "Logger initialized!");
 
+  // Setup Dear ImGui context
+  IMGUI_CHECKVERSION();
+  ImGui::CreateContext();
+  ImGuiIO& io = ImGui::GetIO();
+
   running = true;
   
   AddSystem<GameObjectFactory>();
+  AddSystem<Editor>();
   AddSystem<Camera>();
 
   AddSystem<ShaderManager>();
     //  graphics goes last pls don't forget
   AddSystem<GraphicsEngine>();
   AddSystem<InputManager>();
+
+  // Setup Platform/Renderer bindings
+  ImGui_ImplGlfw_InitForOpenGL(GraphicsEngine::GetInstance()->GetWindow()->GetWindow(), true);
+  ImGui_ImplOpenGL3_Init("#version 460");
+  // Setup Dear ImGui style
+  ImGui::StyleColorsDark();
 
   ShaderManager::GetInstance()->AddShader("FSQ.vs", "FSQ.fs", "FSQ");
   ShaderManager::GetInstance()->AddShader("Normal.vs", "Normal.fs", "Normal");
@@ -63,8 +79,9 @@ void Engine::Init()
   an->SetFrameTime(.1f);
 
   GameObjectFactory::GetInstance()->AddObject(obj);
-  GameObjectFactory::GetInstance()->AddObject(obj2);
+  //GameObjectFactory::GetInstance()->AddObject(obj2);
   GameObjectFactory::GetInstance()->ParseObject("player");
+  GameObjectFactory::GetInstance()->ParseObject("verizon");
 }
 
 void Engine::Update()
@@ -73,13 +90,17 @@ void Engine::Update()
   {
     glfwPollEvents();
 
+    ImGui_ImplOpenGL3_NewFrame();
+    ImGui_ImplGlfw_NewFrame();
+    ImGui::NewFrame();
+
     beginFrame = std::chrono::high_resolution_clock::now();
     using namespace std::chrono_literals;
 
-    //if (InputManager::GetInstance()->KeyPress(GLFW_KEY_SLASH))
-    //{
-    //  Serializer::Serialize(player);
-    //}
+    if (InputManager::GetInstance()->KeyPress(GLFW_KEY_SLASH))
+    {
+      Serializer::Serialize(obj2);
+    }
 
     for (auto sys : systems)
     {
@@ -100,6 +121,10 @@ void Engine::Update()
     auto dtChrono = endFrame - beginFrame;
     dt = dtChrono.count() / nano;
   }
+
+  ImGui_ImplOpenGL3_Shutdown();
+  ImGui_ImplGlfw_Shutdown();
+  ImGui::DestroyContext();
 }
 
 template <typename T>
