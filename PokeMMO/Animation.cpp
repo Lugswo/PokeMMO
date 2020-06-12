@@ -2,12 +2,13 @@
 
 #include "InputManager.h"
 #include <rttr/registration>
+#include "Logger.h"
 
 std::vector<float> Animation::CalculateUV()
 {
-  unsigned r = currFrame / col;
+  unsigned r = frameOrder[currFrame] / col;
 
-  unsigned c = currFrame - (r * col);
+  unsigned c = frameOrder[currFrame] - (r * col);
 
   //float tru = (float)(c + 1) / (float)col;
   //float trv = (float)r / (float)row;
@@ -37,18 +38,61 @@ std::vector<float> Animation::CalculateUV()
 
 void Animation::NextFrame()
 {
-  if (++currFrame >= endFrame)
+  if (++currFrame > endFrame)
   {
-    currFrame = startRow * col;
+      currFrame = 0;//startRow * col;
   }
 
   auto uvs = CalculateUV();
   sprite->ChangeUV(uvs);
 }
 
+std::vector<int> Animation::UncompFrameOrder(std::vector<int> inVal)
+{
+  auto retVal = std::vector<int>();
+  for (int i = 0; i < inVal.size(); i++)
+  {
+    if (inVal[i] == -1)
+    {
+      if (inVal.size() < i + 2)
+      {
+        L::Log(TL::WARN, "Compressed animation frame sequence is not correct: -1 is not followed by 2 valid numbers");
+        break;
+      }
+      else
+      {
+        assert(inVal[i + 1] <= inVal[i + 2] &&
+          inVal[i + 1] >= 0 &&
+          inVal[i + 2] >= 0);
+        for (int j = inVal[i + 1]; j <= inVal[i + 2]; j++)
+        {
+          retVal.push_back(j);
+        }
+        i += 2;
+      }
+    }
+    else
+    {
+      retVal.push_back(inVal[i]);
+    }
+  }
+
+  return retVal;
+}
+
+void Animation::SetFrameOrderComp(std::vector<int> inVal)
+{
+  frameOrderComp = inVal;
+  frameOrder = UncompFrameOrder(inVal);
+  endFrame = (unsigned)(frameOrder.size() - 1);
+  ResetAnimation();
+}
+
+
 void Animation::ResetAnimation()
 {
-  currFrame = startRow * col;
+  //currFrame = startRow * col;
+  currFrame = 0;
   currTime = frameTime;
 
   auto uvs = CalculateUV();
@@ -73,7 +117,9 @@ void Animation::Init()
 
   numFrames = row * col;
   currFrame = startRow = 0;
-  endFrame = numFrames + (startRow * col);
+  endFrame = 0;
+
+  SetFrameOrderComp({ 0 });
 
   auto uvs = CalculateUV();
   sprite->ChangeUV(uvs);
@@ -94,11 +140,21 @@ void Animation::ParseInit()
   Transform* trans = GetComponent(Transform, parent);
   trans->SetTextureScale((float)fWidth / (float)fHeight);
 
-  currFrame = startRow * col;
-  endFrame = numFrames + (startRow * col);
+  //currFrame = startRow * col;
+  //endFrame = numFrames + (startRow * col);
+
+  currFrame = 0;
+
+  SetFrameOrderComp(frameOrderComp);
 
   auto uvs = CalculateUV();
   sprite->ChangeUV(uvs);
+
+
+  // TESTING BLOCK REMOVE LATER
+  //auto a = UncompFrameOrder({ -1,4,20,-1,4,20, -1,1,69 });
+  // T?ESTING BLOCK END
+  
 }
 
 void Animation::Update(float dt)
@@ -135,5 +191,6 @@ RTTR_REGISTRATION
       .property("numFrames", &Animation::numFrames)
       .property("frameTime", &Animation::frameTime)
       .property("startRow", &Animation::startRow)
+      .property("frameOrderComp", &Animation::frameOrderComp)
       ;
 }

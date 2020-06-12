@@ -30,7 +30,7 @@ std::vector<System*> Engine::systems;
 
 GameObject *obj = new GameObject("Test");
 
-GameObject *obj2 = new GameObject("verizon");
+//GameObject *obj2 = new GameObject("verizon");
 
 void Engine::Init()
 {
@@ -62,26 +62,35 @@ void Engine::Init()
   ShaderManager::GetInstance()->AddShader("FSQ.vs", "FSQ.fs", "FSQ");
   ShaderManager::GetInstance()->AddShader("Normal.vs", "Normal.fs", "Normal");
 
+  
   obj->AddComponent<Transform>();
   obj->AddComponent<Sprite>("../Textures/player.png");
 
+  /*
   obj2->AddComponent<Transform>();
   obj2->AddComponent<Sprite>("../Textures/Pokemon/Virizion.png");
   obj2->AddComponent<Animation>();
+  */
 
-  Transform* trubo = GetComponent(Transform, obj2);
-  trubo->SetScale(glm::vec3(.5, .5, 1));
+  //Transform* trubo = GetComponent(Transform, obj2);
+  //trubo->SetScale(glm::vec3(.5, .5, 1));
 
-  Animation* an = GetComponent(Animation, obj2);
-  an->SetRows(11);
-  an->SetCols(9);
-  an->SetNumFrames(93);
-  an->SetFrameTime(.1f);
+  
 
   GameObjectFactory::GetInstance()->AddObject(obj);
   //GameObjectFactory::GetInstance()->AddObject(obj2);
   GameObjectFactory::GetInstance()->ParseObject("player");
   GameObjectFactory::GetInstance()->ParseObject("verizon");
+
+  /*
+  Animation* an = GetComponent(Animation, obj2);
+  an->SetRows(11);
+  an->SetCols(9);
+  an->SetNumFrames(93);
+  an->SetFrameTime(.1f);
+  an->SetFrameOrderComp({ -1,0,93 });
+  */
+
 }
 
 void Engine::Update()
@@ -97,10 +106,12 @@ void Engine::Update()
     beginFrame = std::chrono::high_resolution_clock::now();
     using namespace std::chrono_literals;
 
+    /*
     if (InputManager::GetInstance()->KeyPress(GLFW_KEY_SLASH))
     {
       Serializer::Serialize(obj2);
     }
+    */
 
     for (auto sys : systems)
     {

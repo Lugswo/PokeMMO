@@ -241,7 +241,7 @@ void Serializer::Parse(rttr::variant& cVar, const rapidjson::Value& comp, rttr::
 
         for (auto& f : arr)
         {
-          v[count] = f.GetFloat();
+          v[count++] = f.GetFloat(); // I changed it to count++ since it probably should have been - Alex
         }
 
         p.set_value(cVar, v);
@@ -253,6 +253,21 @@ void Serializer::Parse(rttr::variant& cVar, const rapidjson::Value& comp, rttr::
       {
         std::string i = cSer.GetString();
         p.set_value(cVar, i);
+      }
+    }
+    else if (r.is_type<std::vector<int>>())
+    {
+      if (cSer.IsArray())
+      {
+        auto arr = cSer.GetArray();
+        std::vector<int> v;
+        unsigned count = 0;
+
+        for (auto& f : arr)
+        {
+          v.emplace_back(f.GetInt());
+        }
+        p.set_value(cVar, v);
       }
     }
   }
@@ -303,4 +318,14 @@ void Serializer::Serialize(rapidjson::PrettyWriter<rapidjson::FileWriteStream>& 
 void Serializer::Serialize(rapidjson::PrettyWriter<rapidjson::FileWriteStream>& w, const std::string& s)
 {
   w.String(s.c_str());
+}
+
+void Serializer::Serialize(rapidjson::PrettyWriter<rapidjson::FileWriteStream>& w, const std::vector<int>& v)
+{
+    w.StartArray();
+    for (int i : v)
+    {
+        w.Int(i);
+    }
+    w.EndArray();
 }

@@ -21,11 +21,11 @@ public:
   {
     row = r;
 
-    fHeight = (float)height / (float)row;
+    fHeight = (unsigned)((float)height / (float)row);
 
     float aspect = (float)fWidth / (float)fHeight;
     sprite->SetAspect(aspect);
-    endFrame = numFrames + (startRow * col);
+    // endFrame = numFrames + (startRow * col);
 
     ResetAnimation();
   }
@@ -39,11 +39,11 @@ public:
   {
     col = r;
 
-    fWidth = (float)width / (float)col;
+    fWidth = (unsigned)((float)width / (float)col);
 
     float aspect = (float)fWidth / (float)fHeight;
     sprite->SetAspect(aspect);
-    endFrame = numFrames + (startRow * col);
+    // endFrame = numFrames + (startRow * col);
 
     ResetAnimation();
   }
@@ -73,11 +73,15 @@ public:
     return startRow;
   }
 
-  void SetStartRow(unsigned u)
+  void SetStartRow(unsigned u) // del later
   {
     startRow = u;
     endFrame = numFrames + (startRow * col);
   }
+
+  static std::vector<int> UncompFrameOrder(std::vector<int> inVal);
+
+  void SetFrameOrderComp(std::vector<int> inVal); // input is frame order in compressed form (uncompressed will result in same though)
 
 private:
   void ResetAnimation();
@@ -90,6 +94,10 @@ private:
   unsigned width, height, fWidth, fHeight;
 
   unsigned startRow;
+
+  std::vector<int> frameOrder; // literal number list of frames
+  std::vector<int> frameOrderComp; // compressed version with intervals, -1: marker for interval between next 2
+                                   // ex: 2 4 -1 3 7 expands to 2 4 3 4 5 6 7
 
   Sprite* sprite;
 

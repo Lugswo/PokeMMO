@@ -19,14 +19,20 @@
             "name": "Sprite",
             "filepath": "../Textures/Player/mPlayerRun.png"
         },
-        {
-            "name": "Animation",
-            "row": 4,
-            "col": 3,
-            "numFrames": 3,
-            "frameTime": 0.4000000059604645,
-            "startRow": 1
-        },
+      {
+        "name": "Animation",
+        "row": 4,
+        "col": 3,
+        "numFrames": 3,
+        "frameTime": 0.4000000059604645,
+        "startRow": 1,
+        "frameOrderComp": [
+          1,
+          0,
+          2,
+          0
+        ]
+      },
         {
             "name": "Player"
         }

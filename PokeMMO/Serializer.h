@@ -43,12 +43,14 @@ private:
   static void Serialize(rapidjson::PrettyWriter<rapidjson::FileWriteStream>& w, const glm::vec3& v);
   static void Serialize(rapidjson::PrettyWriter<rapidjson::FileWriteStream>& w, const glm::vec2& i);
   static void Serialize(rapidjson::PrettyWriter<rapidjson::FileWriteStream>& w, const std::string& s);
+  static void Serialize(rapidjson::PrettyWriter<rapidjson::FileWriteStream>& w, const std::vector<int>& v);
 
-  template <typename T>
-  static void Serialize(rapidjson::PrettyWriter<rapidjson::FileWriteStream>& w, const std::vector<T>& v)
-  {
 
-  }
+  //template <typename T>
+  //static void Serialize(rapidjson::PrettyWriter<rapidjson::FileWriteStream>& w, const std::vector<T>& v)
+  //{
+  //
+  //}
 
   template <typename T1, typename T2>
   static void Serialize(rapidjson::PrettyWriter<rapidjson::FileWriteStream>& w, const std::map<T1, T2>& m)

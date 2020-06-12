@@ -19,12 +19,17 @@
             "name": "Sprite",
             "filepath": "../Textures/Pokemon/Virizion.png"
         },
-        {
-            "name": "Animation",
-            "row": 11,
-            "col": 9,
-            "numFrames": 93,
-            "frameTime": 0.10000000149011612
-        }
+      {
+        "name": "Animation",
+        "row": 11,
+        "col": 9,
+        "numFrames": 93,
+        "frameTime": 0.10000000149011612,
+        "frameOrderComp": [
+          -1,
+          0,
+          92
+        ]
+      }
     ]
 }
