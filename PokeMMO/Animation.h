@@ -3,6 +3,7 @@
 #include "Sprite.h"
 
 #include <rttr/registration_friend.h>
+#include <map>
 
 class Animation : public Component
 {
@@ -81,7 +82,9 @@ public:
 
   static std::vector<int> UncompFrameOrder(std::vector<int> inVal);
 
-  void SetFrameOrderComp(std::vector<int> inVal); // input is frame order in compressed form (uncompressed will result in same though)
+  void SetFrameOrderComp(std::string key, std::vector<int> inVal); // input is frame order in compressed form (uncompressed will result in same though)
+
+  void SetAnim(std::string key = "default");
 
 private:
   void ResetAnimation();
@@ -95,7 +98,12 @@ private:
 
   unsigned startRow;
 
-  std::vector<int> frameOrder; // literal number list of frames
+  std::map<std::string, std::vector<int>> frameOrderMap; // literal number list of frames
+  std::map<std::string, std::vector<int>> frameOrderCompMap; // compressed version with intervals, -1: marker for interval between next 2
+                                                             // ex: 2 4 -1 3 7 expands to 2 4 3 4 5 6 7
+  
+  std::string currentAnimKey; // current key to frameOrderMap
+  std::vector<int> frameOrderCurrent; // literal number list of frames
   std::vector<int> frameOrderComp; // compressed version with intervals, -1: marker for interval between next 2
                                    // ex: 2 4 -1 3 7 expands to 2 4 3 4 5 6 7
 

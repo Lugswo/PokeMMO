@@ -6,9 +6,9 @@
 
 std::vector<float> Animation::CalculateUV()
 {
-  unsigned r = frameOrder[currFrame] / col;
+  unsigned r = frameOrderCurrent[currFrame] / col;
 
-  unsigned c = frameOrder[currFrame] - (r * col);
+  unsigned c = frameOrderCurrent[currFrame] - (r * col);
 
   //float tru = (float)(c + 1) / (float)col;
   //float trv = (float)r / (float)row;
@@ -80,18 +80,36 @@ std::vector<int> Animation::UncompFrameOrder(std::vector<int> inVal)
   return retVal;
 }
 
-void Animation::SetFrameOrderComp(std::vector<int> inVal)
+void Animation::SetFrameOrderComp(std::string key, std::vector<int> inVal)
 {
-  frameOrderComp = inVal;
-  frameOrder = UncompFrameOrder(inVal);
-  endFrame = (unsigned)(frameOrder.size() - 1);
-  ResetAnimation();
+  if (frameOrderCompMap.count(key) == 0 && frameOrderMap.count(key) == 0)
+  {
+    frameOrderCompMap.emplace(key, inVal);
+    frameOrderMap.emplace(key, UncompFrameOrder(inVal));
+  }
+  else
+  {
+    L::Log(TL::WARN, "Animation frame order added for key that already exists");
+  }
 }
 
+void Animation::SetAnim(std::string key)
+{
+  if (frameOrderMap.count(key) == 1)
+  {
+    currentAnimKey = key;
+    frameOrderCurrent = frameOrderMap[key];
+    endFrame = (unsigned)(frameOrderCurrent.size() - 1);
+    ResetAnimation();
+  }
+  else
+  {
+    L::Log(TL::WARN, "Animation frame order for given key does not exist");
+  }
+}
 
 void Animation::ResetAnimation()
 {
-  //currFrame = startRow * col;
   currFrame = 0;
   currTime = frameTime;
 
@@ -119,7 +137,8 @@ void Animation::Init()
   currFrame = startRow = 0;
   endFrame = 0;
 
-  SetFrameOrderComp({ 0 });
+  SetFrameOrderComp("default", { 0 });
+  SetAnim();
 
   auto uvs = CalculateUV();
   sprite->ChangeUV(uvs);
@@ -145,7 +164,18 @@ void Animation::ParseInit()
 
   currFrame = 0;
 
-  SetFrameOrderComp(frameOrderComp);
+  if (frameOrderCompMap.size() == 0)
+  {
+    SetFrameOrderComp("default", { 0 });
+  }
+  else
+  {
+    for (const auto& a : frameOrderCompMap)
+    {
+      frameOrderMap.insert(a);
+    }
+  }
+  SetAnim();
 
   auto uvs = CalculateUV();
   sprite->ChangeUV(uvs);
