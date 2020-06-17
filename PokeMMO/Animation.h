@@ -67,7 +67,9 @@ public:
 
   std::string GetAnim() const { return currentAnimKey; }
 
-  void SetAnim(std::string key = "default");
+  void SetAnim(std::string key);
+
+  void SetAnim();
 
 private:
   void ResetAnimation();
@@ -84,6 +86,7 @@ private:
                                                              // ex: 2 4 -1 3 7 expands to 2 4 3 4 5 6 7
   
   std::string currentAnimKey; // current key to frameOrderMap
+  std::string defaultAnimKey; // default animation key
   std::vector<int> frameOrderCurrent; // current frames
 
   Sprite* sprite;

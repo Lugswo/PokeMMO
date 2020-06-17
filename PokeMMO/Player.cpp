@@ -71,7 +71,11 @@ void Player::Update(float dt)
   else if (move & 0b0100) anim->SetAnim("move_right");
   else if (move & 0b0010) anim->SetAnim("move_up");
   else if (move & 0b0001) anim->SetAnim("move_down");
-  else anim->SetAnim();
+  else if (prevMove & 0b1000) anim->SetAnim("face_left");
+  else if (prevMove & 0b0100) anim->SetAnim("face_right");
+  else if (prevMove & 0b0010) anim->SetAnim("face_up");
+  else if (prevMove & 0b0001) anim->SetAnim("face_down");
+  else {}; // nothing changed since no move now or prev
 
   trans->SetPosition(position);
 }

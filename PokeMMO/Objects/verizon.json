@@ -24,9 +24,10 @@
             "row": 11,
             "col": 9,
             "frameTime": 0.10000000149011612,
+            "defaultAnimKey": "neutral",
             "frameOrderCompMap": [
                 {
-                    "key": "default",
+                    "key": "neutral",
                     "vector": [
                         -1,
                         0,

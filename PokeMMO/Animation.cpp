@@ -120,6 +120,11 @@ void Animation::SetAnim(std::string key)
   }
 }
 
+void Animation::SetAnim()
+{
+  SetAnim(defaultAnimKey);
+}
+
 void Animation::ResetAnimation()
 {
   currFrame = 0;
@@ -148,7 +153,8 @@ void Animation::Init()
   currFrame = 0;
   endFrame = 0;
 
-  SetFrameOrderComp("default", { 0 });
+  defaultAnimKey = "default";
+  SetFrameOrderComp(defaultAnimKey, { 0 });
   SetAnim();
 
   auto uvs = CalculateUV();
@@ -170,14 +176,17 @@ void Animation::ParseInit()
   Transform* trans = GetComponent(Transform, parent);
   trans->SetTextureScale((float)fWidth / (float)fHeight);
 
-  //currFrame = startRow * col;
-  //endFrame = numFrames + (startRow * col);
-
   currFrame = 0;
+
+  if (defaultAnimKey == "")
+  {
+    defaultAnimKey = "default";
+    SetFrameOrderComp(defaultAnimKey, { 0 });
+  }
 
   if (frameOrderCompMap.size() == 0)
   {
-    SetFrameOrderComp("default", { 0 });
+    SetFrameOrderComp(defaultAnimKey, { 0 });
   }
   else
   {
@@ -187,12 +196,6 @@ void Animation::ParseInit()
 
   auto uvs = CalculateUV();
   sprite->ChangeUV(uvs);
-
-
-  // TESTING BLOCK REMOVE LATER
-  //auto a = UncompFrameOrder({ -1,4,20,-1,4,20, -1,1,69 });
-  // T?ESTING BLOCK END
-  
 }
 
 void Animation::Update(float dt)
@@ -227,6 +230,7 @@ RTTR_REGISTRATION
       .property("row", &Animation::row)
       .property("col", &Animation::col)
       .property("frameTime", &Animation::frameTime)
+      .property("defaultAnimKey", &Animation::defaultAnimKey)
       .property("frameOrderCompMap", &Animation::frameOrderCompMap)
       ;
 }

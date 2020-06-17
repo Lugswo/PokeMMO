@@ -1,76 +1,95 @@
 {
-    "name": "player",
-    "components": [
+  "name": "player",
+  "components": [
+    {
+      "name": "Transform",
+      "pos": [
+        -1.0027120113372803,
+        0.03916013985872269,
+        0.0
+      ],
+      "scale": [
+        0.5,
+        0.5,
+        1.0
+      ],
+      "rotation": 0.0
+    },
+    {
+      "name": "Sprite",
+      "filepath": "../Textures/Player/mPlayer.png"
+    },
+    {
+      "name": "Animation",
+      "row": 8,
+      "col": 3,
+      "frameTime": 0.20000000298023225,
+      "defaultAnimKey": "face_down",
+      "frameOrderCompMap": [
         {
-            "name": "Transform",
-            "pos": [
-                -1.0027120113372803,
-                0.5136383771896362,
-                0.0
-            ],
-            "scale": [
-                0.5,
-                0.5,
-                1.0
-            ],
-            "rotation": 0.0
+          "key": "face_down",
+          "vector": [
+            3
+          ]
         },
         {
-            "name": "Sprite",
-            "filepath": "../Textures/Player/mPlayerRun.png"
+          "key": "face_left",
+          "vector": [
+            6
+          ]
         },
         {
-            "name": "Animation",
-            "row": 4,
-            "col": 3,
-            "frameTime": 0.2,
-            "frameOrderCompMap": [
-                {
-                    "key": "default",
-                    "vector": [
-                        3
-                    ]
-                },
-                {
-                    "key": "move_down",
-                    "vector": [
-                        3,
-                        4,
-                        3,
-                        5
-                    ]
-                },
-                {
-                    "key": "move_left",
-                    "vector": [
-                        6,
-                        7,
-                        6,
-                        8
-                    ]
-                },
-                {
-                    "key": "move_right",
-                    "vector": [
-                        9,
-                        10,
-                        9,
-                        11
-                    ]
-                },
-                {
-                    "key": "move_up",
-                    "vector": [
-                        0,
-                        1,
-                        0,
-                        2
-                    ]
-                }
-            ]
+          "key": "face_right",
+          "vector": [
+            9
+          ]
         },
         {
-            "name": "Player"
+          "key": "face_up",
+          "vector": [
+            0
+          ]
+        },
+        {
+          "key": "move_down",
+          "vector": [
+            3,
+            4,
+            3,
+            5
+          ]
+        },
+        {
+          "key": "move_left",
+          "vector": [
+            6,
+            7,
+            6,
+            8
+          ]
+        },
+        {
+          "key": "move_right",
+          "vector": [
+            9,
+            10,
+            9,
+            11
+          ]
+        },
+        {
+          "key": "move_up",
+          "vector": [
+            0,
+            1,
+            0,
+            2
+          ]
         }
-    ]
+      ]
+    },
+    {
+      "name": "Player"
+    }
+  ]
 }
