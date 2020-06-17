@@ -2,6 +2,7 @@
 
 #include "Component.h"
 #include "Transform.h"
+#include "Animation.h"
 
 class Player : public Component
 {

@@ -42,6 +42,16 @@ GameObject* GameObjectFactory::FindObject(const std::string& name)
   return nullptr;
 }
 
+std::vector<const GameObject*> GameObjectFactory::GetObjectsConst() const
+{
+  std::vector<const GameObject*> constObjects;
+  for (const GameObject* g : objects)
+  {
+    constObjects.emplace_back(g);
+  }
+  return constObjects;
+}
+
 void GameObjectFactory::Init()
 {
   playerRef = nullptr;

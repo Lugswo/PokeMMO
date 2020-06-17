@@ -93,6 +93,18 @@ void Animation::SetFrameOrderComp(std::string key, std::vector<int> inVal)
   }
 }
 
+void Animation::SetFrameOrderComp(std::map<std::string, std::vector<int>> compMap)
+{
+  for (auto& mapVal : compMap)
+  {
+    frameOrderMap.emplace(mapVal.first, UncompFrameOrder(mapVal.second));
+    if (frameOrderCompMap.count(mapVal.first) == 0) // add if not already in comp map
+    {
+      frameOrderCompMap.insert(mapVal);
+    }
+  }
+}
+
 void Animation::SetAnim(std::string key)
 {
   if (frameOrderMap.count(key) == 1)
@@ -170,10 +182,7 @@ void Animation::ParseInit()
   }
   else
   {
-    for (const auto& a : frameOrderCompMap)
-    {
-      frameOrderMap.insert(a);
-    }
+    SetFrameOrderComp(frameOrderCompMap);
   }
   SetAnim();
 
@@ -221,6 +230,7 @@ RTTR_REGISTRATION
       .property("numFrames", &Animation::numFrames)
       .property("frameTime", &Animation::frameTime)
       .property("startRow", &Animation::startRow)
+      .property("frameOrderCompMap", &Animation::frameOrderCompMap)
       .property("frameOrderComp", &Animation::frameOrderComp)
       ;
 }

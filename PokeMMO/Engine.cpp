@@ -106,12 +106,15 @@ void Engine::Update()
     beginFrame = std::chrono::high_resolution_clock::now();
     using namespace std::chrono_literals;
 
-    /*
+    
     if (InputManager::GetInstance()->KeyPress(GLFW_KEY_SLASH))
     {
-      Serializer::Serialize(obj2);
+      for (const auto g : GameObjectFactory::GetInstance()->GetObjectsConst())
+      {
+        Serializer::Serialize(g);
+      }
     }
-    */
+    
 
     for (auto sys : systems)
     {

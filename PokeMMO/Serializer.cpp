@@ -168,6 +168,16 @@ void Serializer::Serialize(rapidjson::PrettyWriter<rapidjson::FileWriteStream>& 
     std::string i = r.get_value<std::string>();
     Serialize(w, i);
   }
+  else if (r.is_type<std::vector<int>>())
+  {
+    std::vector<int> i = r.get_value<std::vector<int>>();
+    Serialize(w, i);
+  }
+  else if (r.is_type<std::map<std::string, std::vector<int>>>())
+  {
+    auto i = r.get_value<std::map<std::string, std::vector<int>>>();
+    Serialize(w, i);
+  }
 }
 
 void Serializer::Parse(rttr::variant& cVar, const rapidjson::Value& comp, rttr::variant& r, const rttr::property& p)
@@ -261,13 +271,35 @@ void Serializer::Parse(rttr::variant& cVar, const rapidjson::Value& comp, rttr::
       {
         auto arr = cSer.GetArray();
         std::vector<int> v;
-        unsigned count = 0;
 
         for (auto& f : arr)
         {
           v.emplace_back(f.GetInt());
         }
         p.set_value(cVar, v);
+      }
+    }
+    else if (r.is_type<std::map<std::string, std::vector<int>>>())
+    {
+      if (cSer.IsArray())
+      {
+        auto arr1 = cSer.GetArray();
+        std::map<std::string, std::vector<int>> m;
+
+        for (auto& mapVal : arr1)
+        {
+          if (mapVal.IsObject() && mapVal["vector"].IsArray())
+          {
+            auto key = mapVal["key"].GetString();
+            std::vector<int> vec;
+            for (auto& val : mapVal["vector"].GetArray())
+            {
+              vec.emplace_back(val.GetInt());
+            }
+            m.emplace(key, vec);
+          }
+        }
+        p.set_value(cVar, m);
       }
     }
   }
@@ -328,4 +360,24 @@ void Serializer::Serialize(rapidjson::PrettyWriter<rapidjson::FileWriteStream>& 
         w.Int(i);
     }
     w.EndArray();
+}
+
+void Serializer::Serialize(rapidjson::PrettyWriter<rapidjson::FileWriteStream>& w, const std::map<std::string, std::vector<int>>& m)
+{
+  w.StartArray();
+  for (const auto& mapVal : m)
+  {
+    w.StartObject();
+    w.Key("key");
+    w.String(mapVal.first.c_str());
+    w.Key("vector");
+    w.StartArray();
+    for (const auto& vecVal : mapVal.second)
+    {
+      w.Int(vecVal);
+    }
+    w.EndArray();
+    w.EndObject();
+  }
+  w.EndArray();
 }
