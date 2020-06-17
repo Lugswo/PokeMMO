@@ -60,23 +60,12 @@ void Editor::Update(float dt)
       anim->SetCols(c);
     }
 
-    int n = anim->GetNumFrames();
-    if (ImGui::InputInt("Frame Count", &n))
-    {
-      anim->SetNumFrames(n);
-    }
-
     float t = anim->GetFrameTime();
     if (ImGui::InputFloat("Frame Timer", &t))
     {
       anim->SetFrameTime(t);
     }
 
-    int start = anim->GetStartRow();
-    if (ImGui::InputInt("Start Row", &start))
-    {
-      anim->SetStartRow(start);
-    }
 
     if (ImGui::Button("Save"))
     {

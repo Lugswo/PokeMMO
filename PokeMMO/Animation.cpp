@@ -145,8 +145,7 @@ void Animation::Init()
   fWidth = width;
   fHeight = height;
 
-  numFrames = row * col;
-  currFrame = startRow = 0;
+  currFrame = 0;
   endFrame = 0;
 
   SetFrameOrderComp("default", { 0 });
@@ -227,10 +226,7 @@ RTTR_REGISTRATION
       // register directly a member object pointer; mark it as 'private'
       .property("row", &Animation::row)
       .property("col", &Animation::col)
-      .property("numFrames", &Animation::numFrames)
       .property("frameTime", &Animation::frameTime)
-      .property("startRow", &Animation::startRow)
       .property("frameOrderCompMap", &Animation::frameOrderCompMap)
-      .property("frameOrderComp", &Animation::frameOrderComp)
       ;
 }

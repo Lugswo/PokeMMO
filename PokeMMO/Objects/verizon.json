@@ -1,46 +1,39 @@
 {
-  "name": "verizon",
-  "components": [
-    {
-      "name": "Transform",
-      "pos": [
-        0.0,
-        0.0,
-        0.0
-      ],
-      "scale": [
-        0.5,
-        0.5,
-        1.0
-      ],
-      "rotation": 0.0
-    },
-    {
-      "name": "Sprite",
-      "filepath": "../Textures/Pokemon/Virizion.png"
-    },
-    {
-      "name": "Animation",
-      "row": 11,
-      "col": 9,
-      "numFrames": 93,
-      "frameTime": 0.10000000149011612,
-      "startRow": 0,
-      "frameOrderCompMap": [
+    "name": "verizon",
+    "components": [
         {
-          "key": "default",
-          "vector": [
-            -1,
-            0,
-            92
-          ]
+            "name": "Transform",
+            "pos": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                0.5,
+                0.5,
+                1.0
+            ],
+            "rotation": 0.0
+        },
+        {
+            "name": "Sprite",
+            "filepath": "../Textures/Pokemon/Virizion.png"
+        },
+        {
+            "name": "Animation",
+            "row": 11,
+            "col": 9,
+            "frameTime": 0.10000000149011612,
+            "frameOrderCompMap": [
+                {
+                    "key": "default",
+                    "vector": [
+                        -1,
+                        0,
+                        92
+                    ]
+                }
+            ]
         }
-      ],
-      "frameOrderComp": [
-        -1,
-        0,
-        92
-      ]
-    }
-  ]
+    ]
 }

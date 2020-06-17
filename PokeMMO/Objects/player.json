@@ -4,8 +4,8 @@
         {
             "name": "Transform",
             "pos": [
-                -2.064225435256958,
-                -0.5056265592575073,
+                -1.0027120113372803,
+                0.5136383771896362,
                 0.0
             ],
             "scale": [
@@ -23,42 +23,51 @@
             "name": "Animation",
             "row": 4,
             "col": 3,
-            "numFrames": 3,
-            "frameTime": 0.4000000059604645,
-            "startRow": 1,
+            "frameTime": 0.2,
             "frameOrderCompMap": [
-              {
-                "key": "default",
-                "vector": [
-                  3
-                ]
-              },
-              {
-                "key": "move_left",
-                "vector": [
-                  6,7,6,8
-                ]
-              },
-              {
-                "key": "move_right",
-                "vector": [
-                  9,10,9,11
-                ]
-              },
-              {
-                "key": "move_up",
-                "vector": [
-                  0,1,0,2
-                ]
-              },
-              {
-                "key": "move_down",
-                "vector": [
-                  3,4,3,5
-                ]
-              }
-            ],
-            "frameOrderComp": []
+                {
+                    "key": "default",
+                    "vector": [
+                        3
+                    ]
+                },
+                {
+                    "key": "move_down",
+                    "vector": [
+                        3,
+                        4,
+                        3,
+                        5
+                    ]
+                },
+                {
+                    "key": "move_left",
+                    "vector": [
+                        6,
+                        7,
+                        6,
+                        8
+                    ]
+                },
+                {
+                    "key": "move_right",
+                    "vector": [
+                        9,
+                        10,
+                        9,
+                        11
+                    ]
+                },
+                {
+                    "key": "move_up",
+                    "vector": [
+                        0,
+                        1,
+                        0,
+                        2
+                    ]
+                }
+            ]
         },
         {
             "name": "Player"

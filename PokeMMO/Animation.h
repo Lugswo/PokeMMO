@@ -49,16 +49,6 @@ public:
     ResetAnimation();
   }
 
-  unsigned GetNumFrames() const
-  {
-    return numFrames;
-  }
-
-  void SetNumFrames(unsigned r)
-  {
-    numFrames = r;
-  }
-
   float GetFrameTime() const
   {
     return frameTime;
@@ -67,17 +57,6 @@ public:
   void SetFrameTime(float t)
   {
     frameTime = t;
-  }
-
-  unsigned GetStartRow() const
-  {
-    return startRow;
-  }
-
-  void SetStartRow(unsigned u) // del later
-  {
-    startRow = u;
-    endFrame = numFrames + (startRow * col);
   }
 
   static std::vector<int> UncompFrameOrder(std::vector<int> inVal);
@@ -95,21 +74,17 @@ private:
   std::vector<float> CalculateUV();
   void NextFrame();
 
-  unsigned row, col, numFrames, currFrame, endFrame;
+  unsigned row, col, currFrame, endFrame;
 
   float frameTime, currTime;
   unsigned width, height, fWidth, fHeight;
-
-  unsigned startRow;
 
   std::map<std::string, std::vector<int>> frameOrderMap; // literal number list of frames
   std::map<std::string, std::vector<int>> frameOrderCompMap; // compressed version with intervals, -1: marker for interval between next 2
                                                              // ex: 2 4 -1 3 7 expands to 2 4 3 4 5 6 7
   
   std::string currentAnimKey; // current key to frameOrderMap
-  std::vector<int> frameOrderCurrent; // literal number list of frames
-  std::vector<int> frameOrderComp; // compressed version with intervals, -1: marker for interval between next 2
-                                   // ex: 2 4 -1 3 7 expands to 2 4 3 4 5 6 7
+  std::vector<int> frameOrderCurrent; // current frames
 
   Sprite* sprite;
 
