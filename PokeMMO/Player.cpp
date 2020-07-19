@@ -12,23 +12,19 @@ namespace Movement
 
 void Player::Init()
 {
-  SetName("Player");
-
-  trans = GetComponent(Transform, parent);
-  GameObjectFactory::GetInstance()->SetPlayerRef(parent);
+  ParseInit();
 }
 
 void Player::ParseInit()
 {
   SetName("Player");
-
+  anim = GetComponent(Animation, parent);
   trans = GetComponent(Transform, parent);
   GameObjectFactory::GetInstance()->SetPlayerRef(parent);
 }
 
 void Player::Update(float dt)
 {
-  auto anim = GetComponent(Animation, parent);
   auto position = trans->GetPosition();
   uint8_t move = 0; // bitwise storage for movement; left > right > up > down
   if (InputManager::GetInstance()->KeyDown(GLFW_KEY_LEFT))

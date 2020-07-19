@@ -59,15 +59,15 @@ public:
     frameTime = t;
   }
 
-  static std::vector<int> UncompFrameOrder(std::vector<int> inVal);
+  static std::vector<int> UncompFrameOrder(const std::vector<int>& inVal);
 
-  void SetFrameOrderComp(std::string key, std::vector<int> inVal); // input is frame order in compressed form (uncompressed will result in same though)
+  void SetFrameOrderComp(const std::string& key, const std::vector<int>& inVal); // input is frame order in compressed form (uncompressed will result in same though)
 
-  void SetFrameOrderComp(std::map<std::string, std::vector<int>> compMap);
+  void SetFrameOrderComp(const std::map<std::string, std::vector<int>>& compMap);
 
   std::string GetAnim() const { return currentAnimKey; }
 
-  void SetAnim(std::string key);
+  void SetAnim(const std::string& key);
 
   void SetAnim();
 

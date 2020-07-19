@@ -47,7 +47,7 @@ void Animation::NextFrame()
   sprite->ChangeUV(uvs);
 }
 
-std::vector<int> Animation::UncompFrameOrder(std::vector<int> inVal)
+std::vector<int> Animation::UncompFrameOrder(const std::vector<int>& inVal)
 {
   auto retVal = std::vector<int>();
   for (int i = 0; i < inVal.size(); i++)
@@ -80,7 +80,7 @@ std::vector<int> Animation::UncompFrameOrder(std::vector<int> inVal)
   return retVal;
 }
 
-void Animation::SetFrameOrderComp(std::string key, std::vector<int> inVal)
+void Animation::SetFrameOrderComp(const std::string& key, const std::vector<int>& inVal)
 {
   if (frameOrderCompMap.count(key) == 0 && frameOrderMap.count(key) == 0)
   {
@@ -93,7 +93,7 @@ void Animation::SetFrameOrderComp(std::string key, std::vector<int> inVal)
   }
 }
 
-void Animation::SetFrameOrderComp(std::map<std::string, std::vector<int>> compMap)
+void Animation::SetFrameOrderComp(const std::map<std::string, std::vector<int>>& compMap)
 {
   for (auto& mapVal : compMap)
   {
@@ -105,7 +105,7 @@ void Animation::SetFrameOrderComp(std::map<std::string, std::vector<int>> compMa
   }
 }
 
-void Animation::SetAnim(std::string key)
+void Animation::SetAnim(const std::string& key)
 {
   if (frameOrderMap.count(key) == 1)
   {
@@ -137,28 +137,14 @@ void Animation::ResetAnimation()
 
 void Animation::Init()
 {
-  SetName("Animation");
-  sprite = GetComponent(Sprite, parent);
-
   row = col = 1;
-  frameTime = .3f;
-  currTime = frameTime;
+  currTime = frameTime = .3f;
 
-  width = sprite->GetWidth();
-  height = sprite->GetHeight();
-
-  fWidth = width;
-  fHeight = height;
-
-  currFrame = 0;
   endFrame = 0;
 
-  defaultAnimKey = "default";
-  SetFrameOrderComp(defaultAnimKey, { 0 });
-  SetAnim();
+  defaultAnimKey = "";
 
-  auto uvs = CalculateUV();
-  sprite->ChangeUV(uvs);
+  ParseInit();
 }
 
 void Animation::ParseInit()

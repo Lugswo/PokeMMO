@@ -14,6 +14,7 @@ public:
 
 private:
   Transform* trans;
+  Animation* anim;
 
   RTTR_ENABLE(Component)
 };
