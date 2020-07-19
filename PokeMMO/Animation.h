@@ -7,6 +7,8 @@
 class Animation : public Component
 {
 public:
+  Animation();
+
   void Init() override;
   void ParseInit() override;
   void Update(float dt) override;

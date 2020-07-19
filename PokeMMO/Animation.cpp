@@ -3,6 +3,15 @@
 #include "InputManager.h"
 #include <rttr/registration>
 
+Animation::Animation()
+{
+  row = col = 1;
+  frameTime = .3f;
+
+  numFrames = row * col;
+  currFrame = startRow = 0;
+}
+
 std::vector<float> Animation::CalculateUV()
 {
   unsigned r = currFrame / col;
@@ -58,11 +67,9 @@ void Animation::ResetAnimation()
 
 void Animation::Init()
 {
-  SetName("Animation");
+  SetComponentName("Animation");
   sprite = GetComponent(Sprite, parent);
 
-  row = col = 1;
-  frameTime = .3f;
   currTime = frameTime;
 
   width = sprite->GetWidth();
@@ -71,8 +78,6 @@ void Animation::Init()
   fWidth = width;
   fHeight = height;
 
-  numFrames = row * col;
-  currFrame = startRow = 0;
   endFrame = numFrames + (startRow * col);
 
   auto uvs = CalculateUV();
@@ -81,7 +86,7 @@ void Animation::Init()
 
 void Animation::ParseInit()
 {
-  SetName("Animation");
+  SetComponentName("Animation");
   sprite = GetComponent(Sprite, parent);
   currTime = frameTime;
 

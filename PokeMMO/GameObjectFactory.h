@@ -36,6 +36,8 @@ public:
 
   GameObject* FindObject(const std::string& name);
 
+  const std::vector<GameObject*>& GetAllObjects();
+
 private:
   static GameObjectFactory* instance;
   std::vector<GameObject*> objects;

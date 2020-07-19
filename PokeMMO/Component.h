@@ -31,6 +31,7 @@ public:
     return name;
   }
 
+  void SetComponentName(const std::string& str);
   void SetName(const std::string& str);
 
 protected:

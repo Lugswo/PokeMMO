@@ -21,6 +21,4 @@ private:
   void SetVariable(rttr::variant&);
 
   static Editor* instance;
-
-  GameObject* obj;
 };

@@ -5,7 +5,7 @@
 
 void Transform::Init()
 {
-  SetName("Transform");
+  SetComponentName("Transform");
 
   mat = glm::mat4(1.f);
   scale = glm::vec3(1.f);
@@ -17,7 +17,7 @@ void Transform::Init()
 
 void Transform::ParseInit()
 {
-  SetName("Transform");
+  SetComponentName("Transform");
 
   tScale = glm::vec3(1.f);
 }

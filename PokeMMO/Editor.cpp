@@ -21,84 +21,48 @@ Editor* Editor::GetInstance()
 
 void Editor::Init()
 {
-  obj = nullptr;
+
 }
 
 void Editor::Update(float dt)
 {
-  ImGui::Begin("Demo window");
+  ImGui::SetNextWindowPos(ImVec2(0, 0));
+  ImGui::SetNextWindowSize(ImVec2(500, 1080));
+  ImGui::Begin("Outliner");
 
-  char buf[100] = { 0 };
+  GameObjectFactory* gof = GameObjectFactory::GetInstance();
+
+  auto objects = gof->GetInstance()->GetAllObjects();
+
+  for (auto& obj : objects)
+  {
+    if (ImGui::TreeNode(obj->GetName().c_str()))
+    {
+      for (auto& c : obj->GetComponents())
+      {
+        if (ImGui::TreeNode(c->GetName().c_str()))
+        {
+          char buf[128];
+          strcpy(buf, c->GetName().c_str());
+          if (ImGui::InputText("Name", buf, 128, ImGuiInputTextFlags_EnterReturnsTrue))
+          {
+            c->SetName(buf);
+          }
+
+          rttr::type t = rttr::type::get_by_name(c->GetComponentName());
+
+          for (auto& p : t.get_properties())
+          {
+            ImGui::Text(p.get_name().to_string().c_str());
+          }
+
+          ImGui::TreePop();
+        }
+      }
+      ImGui::TreePop();
+    }
+  }
   
-  if (obj)
-  {
-    strcpy(buf, obj->GetName().c_str());
-  }
-
-  if (ImGui::InputText("Object", buf, 100, ImGuiInputTextFlags_EnterReturnsTrue))
-  {
-    GameObject* o = GameObjectFactory::GetInstance()->FindObject(buf);
-
-    if (o)
-    {
-      obj = o;
-    }
-  }
-
-  if (obj)
-  {
-    Animation* anim = GetComponent(Animation, obj);
-    int r = anim->GetRows();
-    if (ImGui::InputInt("Rows", &r))
-    {
-      anim->SetRows(r);
-    }
-
-    int c = anim->GetCols();
-    if (ImGui::InputInt("Columns", &c))
-    {
-      anim->SetCols(c);
-    }
-
-    int n = anim->GetNumFrames();
-    if (ImGui::InputInt("Frame Count", &n))
-    {
-      anim->SetNumFrames(n);
-    }
-
-    float t = anim->GetFrameTime();
-    if (ImGui::InputFloat("Frame Timer", &t))
-    {
-      anim->SetFrameTime(t);
-    }
-
-    int start = anim->GetStartRow();
-    if (ImGui::InputInt("Start Row", &start))
-    {
-      anim->SetStartRow(start);
-    }
-
-    if (ImGui::Button("Save"))
-    {
-      Serializer::Serialize(obj);
-    }
-
-    //for (auto& c : obj->GetComponents())
-    //{
-    //  if (ImGui::TreeNode(c->GetName().c_str()))
-    //  {
-    //    rttr::type t = rttr::type::get_by_name(c->GetComponentName());
-
-    //    //for (auto& p : t.get_properties())
-    //    //{
-    //    //  
-    //    //}
-
-    //    ImGui::TreePop();
-    //  }
-    //}
-  }
-
   ImGui::End();
 }
 

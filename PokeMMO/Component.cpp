@@ -19,8 +19,17 @@ void Component::Shutdown()
 
 }
 
-void Component::SetName(const std::string& str)
+void Component::SetComponentName(const std::string& str)
 {
   compName = str;
+
+  if (name == "")
+  {
+    name = str;
+  }
+}
+
+void Component::SetName(const std::string& str)
+{
   name = str;
 }
