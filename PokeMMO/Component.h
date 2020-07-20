@@ -16,6 +16,11 @@ public:
 
   virtual void SetDepression(const std::string&) {};
 
+  GameObject* GetParent()
+  {
+    return parent;
+  }
+
   void SetParent(GameObject* obj)
   {
     parent = obj;
@@ -31,6 +36,7 @@ public:
     return name;
   }
 
+  void SetComponentName(const std::string& str);
   void SetName(const std::string& str);
 
 protected:

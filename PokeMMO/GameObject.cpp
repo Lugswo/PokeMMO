@@ -8,6 +8,8 @@ GameObject::GameObject(const std::string& n)
 {
   name = n;
   filename = n;
+  saved = true;
+  shouldDelete = false;
 }
 
 GameObject::~GameObject()

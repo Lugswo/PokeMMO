@@ -12,12 +12,14 @@ namespace Movement
 
 void Player::Init()
 {
+
   ParseInit();
 }
 
 void Player::ParseInit()
 {
-  SetName("Player");
+
+  SetComponentName("Player");
   anim = GetComponent(Animation, parent);
   trans = GetComponent(Transform, parent);
   GameObjectFactory::GetInstance()->SetPlayerRef(parent);

@@ -4,9 +4,19 @@
 #include <rttr/registration>
 #include "Logger.h"
 
+Animation::Animation()
+{
+  row = col = 1;
+  frameTime = .3f;
+
+  currFrame = 0;
+}
+
 std::vector<float> Animation::CalculateUV()
 {
+
   unsigned r = frameOrderCurrent[currFrame] / col;
+
 
   unsigned c = frameOrderCurrent[currFrame] - (r * col);
 
@@ -40,7 +50,8 @@ void Animation::NextFrame()
 {
   if (++currFrame > endFrame)
   {
-      currFrame = 0;//startRow * col;
+
+    currFrame = 0;//startRow * col;
   }
 
   auto uvs = CalculateUV();
@@ -127,6 +138,7 @@ void Animation::SetAnim()
 
 void Animation::ResetAnimation()
 {
+
   currFrame = 0;
   currTime = frameTime;
 
@@ -137,19 +149,14 @@ void Animation::ResetAnimation()
 
 void Animation::Init()
 {
-  row = col = 1;
-  currTime = frameTime = .3f;
-
-  endFrame = 0;
-
-  defaultAnimKey = "";
-
   ParseInit();
-}
+  endFrame = 0;
+  defaultAnimKey = "";}
 
 void Animation::ParseInit()
 {
-  SetName("Animation");
+
+  SetComponentName("Animation");
   sprite = GetComponent(Sprite, parent);
   currTime = frameTime;
 
@@ -161,6 +168,7 @@ void Animation::ParseInit()
 
   Transform* trans = GetComponent(Transform, parent);
   trans->SetTextureScale((float)fWidth / (float)fHeight);
+
 
   currFrame = 0;
 
@@ -215,6 +223,7 @@ RTTR_REGISTRATION
       // register directly a member object pointer; mark it as 'private'
       .property("row", &Animation::row)
       .property("col", &Animation::col)
+
       .property("frameTime", &Animation::frameTime)
       .property("defaultAnimKey", &Animation::defaultAnimKey)
       .property("frameOrderCompMap", &Animation::frameOrderCompMap)

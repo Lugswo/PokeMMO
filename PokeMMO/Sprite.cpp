@@ -12,7 +12,7 @@ void Sprite::Init()
 
 void Sprite::ParseInit()
 {
-  SetName("Sprite");
+  SetComponentName("Sprite");
   draw = true;
 
   glGenVertexArrays(1, &VAO);

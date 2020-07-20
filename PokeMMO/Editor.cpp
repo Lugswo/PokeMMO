@@ -4,6 +4,7 @@
 #include "Component.h"
 #include "Animation.h"
 #include "Serializer.h"
+#include "InputManager.h"
 
 #pragma warning(disable : 4996)
 
@@ -21,136 +22,212 @@ Editor* Editor::GetInstance()
 
 void Editor::Init()
 {
-  obj = nullptr;
+
 }
 
 void Editor::Update(float dt)
 {
-  ImGui::Begin("Demo window");
+  ImGui::SetNextWindowPos(ImVec2(0, 0));
+  ImGui::SetNextWindowSize(ImVec2(500, 1080));
+  ImGui::Begin("Outliner");
 
-  char buf[100] = { 0 };
-  
-  if (obj)
+  GameObjectFactory* gof = GameObjectFactory::GetInstance();
+
+  auto objects = gof->GetInstance()->GetAllObjects();
+
+  for (auto& obj : objects)
   {
-    strcpy(buf, obj->GetName().c_str());
-  }
-
-  if (ImGui::InputText("Object", buf, 100, ImGuiInputTextFlags_EnterReturnsTrue))
-  {
-    GameObject* o = GameObjectFactory::GetInstance()->FindObject(buf);
-
-    if (o)
+    bool popped = false;
+    ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1, 0, 0, 1));
+    if (obj->GetSaved())
     {
-      obj = o;
+      ImGui::PopStyleColor();
+      popped = true;
     }
-  }
-
-  if (obj)
-  {
-    Animation* anim = GetComponent(Animation, obj);
-    int r = anim->GetRows();
-    if (ImGui::InputInt("Rows", &r))
+    if (ImGui::TreeNode(obj->GetName().c_str()))
     {
-      anim->SetRows(r);
+      if (ImGui::BeginPopupContextItem("Object Menu"))
+      {
+        if (ImGui::Button("Save"))
+        {
+          Serializer::Serialize(obj);
+          obj->SetSaved(true);
+          ImGui::OpenPopup("Saved");
+        }
+
+        if (ImGui::BeginPopupModal("Saved", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+        {
+          ImGui::Text("Object saved successfully!");
+
+          if (ImGui::Button("Ok"))
+          {
+            ImGui::CloseCurrentPopup();
+          }
+
+          if (InputManager::GetInstance()->KeyPress((GLFW_KEY_ENTER)))
+          {
+            ImGui::CloseCurrentPopup();
+          }
+          ImGui::EndPopup();
+        }
+
+        ImGui::EndPopup();
+      }
+
+      ImGui::SameLine();
+      if (ImGui::SmallButton("Delete")) 
+      {
+        ImGui::OpenPopup("Delete?");
+      }
+
+      if (ImGui::BeginPopupModal("Delete?", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+      {
+        ImGui::Text("Delete this object?");
+
+        if (ImGui::Button("Yes"))
+        {
+          obj->SetDelete();
+          ImGui::CloseCurrentPopup();
+        }
+        else if (ImGui::Button("No"))
+        {
+          ImGui::CloseCurrentPopup();
+        }
+
+        if (InputManager::GetInstance()->KeyPress((GLFW_KEY_ENTER)))
+        {
+          ImGui::CloseCurrentPopup();
+        }
+        ImGui::EndPopup();
+      }
+
+      for (auto& c : obj->GetComponents())
+      {
+        if (ImGui::TreeNode(c->GetName().c_str()))
+        {
+          char buf[128];
+          strcpy(buf, c->GetName().c_str());
+          if (ImGui::InputText("Name", buf, 128, ImGuiInputTextFlags_EnterReturnsTrue))
+          {
+            c->SetName(buf);
+            obj->SetSaved(false);
+          }
+
+          rttr::type t = rttr::type::get_by_name(c->GetComponentName());
+
+          for (auto& p : t.get_properties())
+          {
+            SetVariable(p, c);
+          }
+
+          ImGui::TreePop();
+        }
+      }
+      ImGui::TreePop();
     }
 
-    int c = anim->GetCols();
-    if (ImGui::InputInt("Columns", &c))
+    if (!popped)
     {
-      anim->SetCols(c);
+      ImGui::PopStyleColor();
     }
-
-    float t = anim->GetFrameTime();
-    if (ImGui::InputFloat("Frame Timer", &t))
-    {
-      anim->SetFrameTime(t);
-    }
-
-
-    if (ImGui::Button("Save"))
-    {
-      Serializer::Serialize(obj);
-    }
-
-    //for (auto& c : obj->GetComponents())
-    //{
-    //  if (ImGui::TreeNode(c->GetName().c_str()))
-    //  {
-    //    rttr::type t = rttr::type::get_by_name(c->GetComponentName());
-
-    //    //for (auto& p : t.get_properties())
-    //    //{
-    //    //  
-    //    //}
-
-    //    ImGui::TreePop();
-    //  }
-    //}
   }
 
   ImGui::End();
 }
 
-void Editor::SetVariable(rttr::variant& r)
+template <typename T>
+void SetValue(const rttr::property& p, Component* c, T value)
 {
-  //if (r.is_type<int>())
-  //{
-  //  r.get_type().get_name();
-  //  int i = comp[p.get_name().to_string().c_str()].GetInt();
-  //  p.set_value(cVar, i);
-  //}
-  //else if (r.is_type<float>())
-  //{
-  //  float i = comp[p.get_name().to_string().c_str()].GetFloat();
-  //  p.set_value(cVar, i);
-  //}
-  //else if (r.is_type<bool>())
-  //{
-  //  bool i = comp[p.get_name().to_string().c_str()].GetBool();
-  //  p.set_value(cVar, i);
-  //}
-  //else if (r.is_type<double>())
-  //{
-  //  double i = comp[p.get_name().to_string().c_str()].GetDouble();
-  //  p.set_value(cVar, i);
-  //}
-  //else if (r.is_type<unsigned>())
-  //{
-  //  unsigned i = comp[p.get_name().to_string().c_str()].GetUint();
-  //  p.set_value(cVar, i);
-  //}
-  //else if (r.is_type<glm::vec3>())
-  //{
-  //  glm::vec3 v;
-  //  unsigned count = 0;
-  //  std::string name = p.get_name().to_string();
-  //  const char* c = name.c_str();
+  GameObject* obj = c->GetParent();
+  obj->SetSaved(false);
+  p.set_value(c, value);
+}
 
-  //  for (auto& f : comp[c].GetArray())
-  //  {
-  //    v[count++] = f.GetFloat();
-  //  }
+void Editor::SetVariable(const rttr::property& p, Component* c)
+{
+  rttr::variant r = p.get_value(c);
+  if (r.is_type<int>())
+  {
+    int i = r.get_value<int>();
+    if (ImGui::InputInt(p.get_name().to_string().c_str(), &i))
+    {
+      SetValue(p, c, i);
+    }
+  }
+  else if (r.is_type<unsigned>())
+  {
+    int i = r.get_value<unsigned>();
+    if (ImGui::InputInt(p.get_name().to_string().c_str(), &i))
+    {
+      unsigned u = static_cast<unsigned>(i);
+      SetValue(p, c, u);
+    }
+  }
+  else if (r.is_type<float>())
+  {
+    float i = r.get_value<float>();
+    if (ImGui::InputFloat(p.get_name().to_string().c_str(), &i))
+    {
+      SetValue(p, c, i);
+    }
+  }
+  else if (r.is_type<bool>())
+  {
+    bool i = r.get_value<bool>();
+    if (ImGui::Checkbox(p.get_name().to_string().c_str(), &i))
+    {
+      SetValue(p, c, i);
+    }
+  }
+  else if (r.is_type<double>())
+  {
+    double i = r.get_value<double>();
+    if (ImGui::InputDouble(p.get_name().to_string().c_str(), &i))
+    {
+      SetValue(p, c, i);
+    }
+  }
+  else if (r.is_type<glm::vec3>())
+  {
+    glm::vec3 prev = r.get_value<glm::vec3>();
+    float f[3];
 
-  //  p.set_value(cVar, v);
-  //}
-  //else if (r.is_type<glm::vec2>())
-  //{
-  //  auto arr = comp[p.get_name().to_string().c_str()].GetArray();
-  //  glm::vec3 v;
-  //  unsigned count = 0;
+    f[0] = prev.x;
+    f[1] = prev.y;
+    f[2] = prev.z;
 
-  //  for (auto& f : arr)
-  //  {
-  //    v[count] = f.GetFloat();
-  //  }
+    if (ImGui::InputFloat3(p.get_name().to_string().c_str(), f, 2))
+    {
+      glm::vec3 v(f[0], f[1], f[2]);
+      SetValue(p, c, v);
+    }
+  }
+  else if (r.is_type<glm::vec2>())
+  {
+    glm::vec2 prev = r.get_value<glm::vec2>();
+    float f[2];
 
-  //  p.set_value(cVar, v);
-  //}
-  //else if (r.is_type<std::string>())
-  //{
-  //  std::string i = comp[p.get_name().to_string().c_str()].GetString();
-  //  p.set_value(cVar, i);
-  //}
+    f[0] = prev.x;
+    f[1] = prev.y;
+
+    if (ImGui::InputFloat2(p.get_name().to_string().c_str(), f, 2))
+    {
+      glm::vec2 v(f[0], f[1]);
+      SetValue(p, c, v);
+    }
+  }
+  else if (r.is_type<std::string>())
+  {
+    std::string s = r.get_value<std::string>();
+    char buf[128];
+    strcpy(buf, s.c_str());
+
+    if (ImGui::InputText(p.get_name().to_string().c_str(), buf, 128, ImGuiInputTextFlags_EnterReturnsTrue))
+    {
+      std::string s2 = buf;
+      SetValue(p, c, s2);
+    }
+  }
 }
 
 void Editor::Shutdown()

@@ -18,9 +18,7 @@ public:
   static Editor* GetInstance();
 
 private:
-  void SetVariable(rttr::variant&);
+  void SetVariable(const rttr::property&, Component*);
 
   static Editor* instance;
-
-  GameObject* obj;
 };

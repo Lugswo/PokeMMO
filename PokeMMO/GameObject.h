@@ -45,9 +45,31 @@ public:
     return components;
   }
 
+  const bool GetSaved() const
+  {
+    return saved;
+  }
+
+  void SetSaved(bool b)
+  {
+    saved = b;
+  }
+
+  bool ShouldDelete()
+  {
+    return shouldDelete;
+  }
+
+  void SetDelete()
+  {
+    shouldDelete = true;
+  }
+
 private:
   std::vector<Component *> components;
   std::string name;
+
+  bool saved, shouldDelete;
 
   std::string filename;
 };

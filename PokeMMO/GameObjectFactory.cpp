@@ -42,7 +42,7 @@ GameObject* GameObjectFactory::FindObject(const std::string& name)
   return nullptr;
 }
 
-std::vector<const GameObject*> GameObjectFactory::GetObjectsConst() const
+const std::vector<const GameObject*> GameObjectFactory::GetAllObjectsConst() const
 {
   std::vector<const GameObject*> constObjects;
   for (const GameObject* g : objects)
@@ -50,6 +50,11 @@ std::vector<const GameObject*> GameObjectFactory::GetObjectsConst() const
     constObjects.emplace_back(g);
   }
   return constObjects;
+}
+
+std::vector<GameObject*>& GameObjectFactory::GetAllObjects()
+{
+  return objects;
 }
 
 void GameObjectFactory::Init()

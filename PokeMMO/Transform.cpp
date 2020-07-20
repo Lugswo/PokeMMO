@@ -5,17 +5,20 @@
 
 void Transform::Init()
 {
-  mat = glm::mat4(1.f);
+
+  SetComponentName("Transform");  mat = glm::mat4(1.f);
   scale = glm::vec3(1.f);
   rot = 0.f;
   pos = glm::vec3(0.f);
+
 
   ParseInit();
 }
 
 void Transform::ParseInit()
 {
-  SetName("Transform");
+
+  SetComponentName("Transform");
 
   tScale = glm::vec3(1.f);
 }

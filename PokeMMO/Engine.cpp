@@ -104,21 +104,24 @@ void Engine::Update()
     ImGui::NewFrame();
 
     beginFrame = std::chrono::high_resolution_clock::now();
-    using namespace std::chrono_literals;
-
-    
-    if (InputManager::GetInstance()->KeyPress(GLFW_KEY_SLASH))
-    {
-      for (const auto g : GameObjectFactory::GetInstance()->GetObjectsConst())
-      {
-        Serializer::Serialize(g);
-      }
-    }
-    
+    using namespace std::chrono_literals;    
 
     for (auto sys : systems)
     {
       sys->Update(dt);
+    }
+
+    auto& objects = GameObjectFactory::GetInstance()->GetAllObjects();
+    for (auto itr = objects.begin(); itr != objects.end();)
+    {
+      if ((*itr)->ShouldDelete())
+      {
+        itr = objects.erase(itr);
+      }
+      else
+      {
+        ++itr;
+      }
     }
 
     std::this_thread::sleep_until(beginFrame + (1000ms / 60));
