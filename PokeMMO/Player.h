@@ -7,6 +7,7 @@
 class Player : public Component
 {
 public:
+  Player();
   void Init() override;
   void ParseInit() override;
   void Update(float dt) override;

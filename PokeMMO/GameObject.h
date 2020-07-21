@@ -12,6 +12,7 @@ public:
   ~GameObject();
 
   void Update(float dt);
+  void EditorName();
 
   template <typename T>
   void AddComponent(std::string str = "nothing")
@@ -67,9 +68,7 @@ public:
 
 private:
   std::vector<Component *> components;
-  std::string name;
+  std::string name, filename;
 
   bool saved, shouldDelete;
-
-  std::string filename;
 };

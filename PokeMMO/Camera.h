@@ -18,6 +18,11 @@ public:
 
   static Camera* GetInstance();
 
+  const glm::vec3& GetPosition() const
+  {
+    return position;
+  }
+
 private:
   Camera() {};
   ~Camera() {};

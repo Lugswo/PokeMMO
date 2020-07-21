@@ -1,14 +1,19 @@
 #include "Editor.h"
 
+#include <filesystem>
+
 #include "GameObjectFactory.h"
 #include "Component.h"
 #include "Animation.h"
 #include "Serializer.h"
 #include "InputManager.h"
+#include "Camera.h"
 
 #pragma warning(disable : 4996)
 
 Editor* Editor::instance;
+
+namespace fs = std::experimental::filesystem;
 
 Editor* Editor::GetInstance()
 {
@@ -22,18 +27,149 @@ Editor* Editor::GetInstance()
 
 void Editor::Init()
 {
+  createObject = loadPrefab = false;
+  for (auto& p : fs::recursive_directory_iterator("Objects"))
+  {
+    auto objPos = p.path().string().find(".json");
+    if (objPos != std::string::npos)
+    {
+      std::string str = p.path().string();
 
+      str.erase(str.begin() + objPos, str.end());
+
+      auto pos = str.find_last_of("\\");
+
+      if (pos != std::string::npos)
+      {
+          //  + 1 because pos sucks xd
+        str.erase(str.begin(), str.begin() + pos + 1);
+      }
+
+      objPaths.push_back(str);
+    }
+  }
+
+  rttr::type t = rttr::type::get_by_name("classComponent");
+  auto derived = t.get_derived_classes();
+
+  for (auto& comp : derived)
+  {
+    componentTypes.push_back(comp.get_name().to_string());
+  }
+}
+
+void Editor::MenuBar()
+{
+  if (ImGui::BeginMenuBar())
+  {
+    if (ImGui::BeginMenu("File"))
+    {
+      if (ImGui::MenuItem("New Object", "CTRL + N"))
+      {
+        createObject = true;
+      }
+
+      if (ImGui::MenuItem("Load Object", "CTRL + SHIFT + N"))
+      {
+        loadPrefab = true;
+      }
+
+      ImGui::EndMenu();
+    }
+    ImGui::EndMenuBar();
+  }
+
+  if (createObject)
+  {
+    ImGui::OpenPopup("Create New Object");
+  }
+
+  if (ImGui::BeginPopupModal("Create New Object", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+  {
+    char buf[128] = { 0 };
+    if (ImGui::InputText("Object Name", buf, 128, ImGuiInputTextFlags_EnterReturnsTrue))
+    {
+      GameObject* obj = new GameObject(buf);
+      obj->EditorName();
+      GameObjectFactory::GetInstance()->AddObject(obj);
+      obj->SetSaved(false);
+      objPaths.push_back(buf);
+      ImGui::CloseCurrentPopup();
+      createObject = false;
+    }
+
+    if (ImGui::Button("Cancel"))
+    {
+      ImGui::CloseCurrentPopup();
+      createObject = false;
+    }
+    ImGui::EndPopup();
+  }
+
+  if (loadPrefab)
+  {
+    ImGui::OpenPopup("Load Prefab");
+  }
+
+  if (ImGui::BeginPopupModal("Load Prefab", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+  {
+    static ImGuiTextFilter filter;
+    filter.Draw();
+
+    static const char* selectedObj = objPaths[0].c_str();
+
+    if (ImGui::BeginCombo("Object Name", selectedObj))
+    {
+      for (int i = 0; i < objPaths.size(); i++)
+      {
+        if (filter.PassFilter(objPaths[i].c_str()))
+        {
+          bool is_selected = (selectedObj == objPaths[i]);
+          if (ImGui::Selectable(objPaths[i].c_str(), is_selected))
+            selectedObj = objPaths[i].c_str();
+          if (is_selected)
+            ImGui::SetItemDefaultFocus();   // Set the initial focus when opening the combo (scrolling + for keyboard navigation support in the upcoming navigation branch)
+        }
+      }
+
+      ImGui::EndCombo();
+    }
+
+    if (ImGui::Button("Load"))
+    {
+      GameObject* obj = GameObjectFactory::GetInstance()->ParseObject(selectedObj);
+      obj->EditorName();
+
+      Transform* trans = GetComponent(Transform, obj);
+      if (trans)
+      {
+        glm::vec3 pos = Camera::GetInstance()->GetPosition();
+        pos.z = 0.f;
+        trans->SetPosition(pos);
+      }
+
+      ImGui::CloseCurrentPopup();
+      loadPrefab = false;
+    }
+
+    if (ImGui::Button("Cancel"))
+    {
+      ImGui::CloseCurrentPopup();
+      loadPrefab = false;
+    }
+    ImGui::EndPopup();
+  }
 }
 
 void Editor::Update(float dt)
 {
   ImGui::SetNextWindowPos(ImVec2(0, 0));
   ImGui::SetNextWindowSize(ImVec2(500, 1080));
-  ImGui::Begin("Outliner");
+  ImGui::Begin("Outliner", nullptr, ImGuiWindowFlags_MenuBar);
 
-  GameObjectFactory* gof = GameObjectFactory::GetInstance();
+  MenuBar();
 
-  auto objects = gof->GetInstance()->GetAllObjects();
+  auto objects = GameObjectFactory::GetInstance()->GetAllObjects();
 
   for (auto& obj : objects)
   {
@@ -44,7 +180,12 @@ void Editor::Update(float dt)
       ImGui::PopStyleColor();
       popped = true;
     }
-    if (ImGui::TreeNode(obj->GetName().c_str()))
+
+    std::string objName = obj->GetName();
+    objName += ", ";
+    objName += obj->GetFilename();
+
+    if (ImGui::TreeNode(objName.c_str()))
     {
       if (ImGui::BeginPopupContextItem("Object Menu"))
       {
@@ -71,6 +212,60 @@ void Editor::Update(float dt)
           ImGui::EndPopup();
         }
 
+        ImGui::EndPopup();
+      }
+
+      ImGui::SameLine();
+      if (ImGui::SmallButton("Add Component"))
+      {
+        ImGui::OpenPopup("Add Component?");
+      }
+
+      if (ImGui::BeginPopupModal("Add Component?", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+      {
+        static ImGuiTextFilter filter;
+        filter.Draw();
+
+        static const char* selectedComponent = componentTypes[0].c_str();
+
+        if (ImGui::BeginCombo("Component", selectedComponent))
+        {
+          for (int i = 0; i < componentTypes.size(); i++)
+          {
+            if (filter.PassFilter(componentTypes[i].c_str()))
+            {
+              bool is_selected = (selectedComponent == componentTypes[i]);
+              if (ImGui::Selectable(componentTypes[i].c_str(), is_selected))
+                selectedComponent = componentTypes[i].c_str();
+              if (is_selected)
+                ImGui::SetItemDefaultFocus();   // Set the initial focus when opening the combo (scrolling + for keyboard navigation support in the upcoming navigation branch)
+            }
+          }
+
+          ImGui::EndCombo();
+        }
+
+        if (ImGui::Button("Add Component"))
+        {
+          rttr::type t = rttr::type::get_by_name(selectedComponent);
+
+          rttr::variant* toAdd = new rttr::variant();
+          *toAdd = t.create();
+          Component* componentPtr = toAdd->get_value<Component*>();
+
+          obj->AddComponent(componentPtr);
+
+          ImGui::CloseCurrentPopup();
+          loadPrefab = false;
+        }
+
+        ImGui::SameLine();
+
+        if (ImGui::Button("Cancel"))
+        {
+          ImGui::CloseCurrentPopup();
+          loadPrefab = false;
+        }
         ImGui::EndPopup();
       }
 
@@ -105,6 +300,33 @@ void Editor::Update(float dt)
       {
         if (ImGui::TreeNode(c->GetName().c_str()))
         {
+          ImGui::SameLine();
+          if (ImGui::SmallButton("Delete Component"))
+          {
+            ImGui::OpenPopup("Delete Component?");
+          }
+
+          if (ImGui::BeginPopupModal("Delete Component?", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+          {
+            ImGui::Text("Delete this component?");
+
+            if (ImGui::Button("Yes"))
+            {
+              c->SetDelete();
+              ImGui::CloseCurrentPopup();
+            }
+            else if (ImGui::Button("No"))
+            {
+              ImGui::CloseCurrentPopup();
+            }
+
+            if (InputManager::GetInstance()->KeyPress((GLFW_KEY_ENTER)))
+            {
+              ImGui::CloseCurrentPopup();
+            }
+            ImGui::EndPopup();
+          }
+
           char buf[128];
           strcpy(buf, c->GetName().c_str());
           if (ImGui::InputText("Name", buf, 128, ImGuiInputTextFlags_EnterReturnsTrue))
@@ -139,7 +361,10 @@ template <typename T>
 void SetValue(const rttr::property& p, Component* c, T value)
 {
   GameObject* obj = c->GetParent();
-  obj->SetSaved(false);
+  if (c->GetComponentName() != "Transform")
+  {
+    obj->SetSaved(false);
+  }
   p.set_value(c, value);
 }
 

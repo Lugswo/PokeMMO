@@ -6,6 +6,8 @@
 
 Animation::Animation()
 {
+  SetComponentName("Animation");
+
   row = col = 1;
   frameTime = .3f;
 
@@ -155,8 +157,6 @@ void Animation::Init()
 
 void Animation::ParseInit()
 {
-
-  SetComponentName("Animation");
   sprite = GetComponent(Sprite, parent);
   currTime = frameTime;
 

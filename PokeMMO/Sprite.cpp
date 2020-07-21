@@ -5,6 +5,11 @@
 #include "GraphicsEngine.h"
 #include "ShaderManager.h"
 
+Sprite::Sprite()
+{
+  SetComponentName("Sprite");
+}
+
 void Sprite::Init()
 {
   ParseInit();
@@ -12,7 +17,6 @@ void Sprite::Init()
 
 void Sprite::ParseInit()
 {
-  SetComponentName("Sprite");
   draw = true;
 
   glGenVertexArrays(1, &VAO);
@@ -39,14 +43,16 @@ void Sprite::ParseInit()
 
   shader = ShaderManager::GetInstance()->GetShader("Normal");
 
-  tex = new Texture(filepath);
+  if (!tex)
+    SetTexture();
+  else
+  {
+    transform = GetComponent(Transform, parent);
+    transform->SetTextureScale(tex->GetAspect());
 
-  transform = GetComponent(Transform, parent);
-
-  transform->SetTextureScale(tex->GetAspect());
-
-  width = tex->GetWidth();
-  height = tex->GetHeight();
+    width = tex->GetWidth();
+    height = tex->GetHeight();
+  }
 }
 
 void Sprite::Update(float dt)
@@ -82,6 +88,25 @@ void Sprite::ChangeUV(const std::vector<float>& uvs)
   glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STREAM_DRAW);
 }
 
+void Sprite::SetTexture()
+{
+  if (tex)
+  {
+    delete tex;
+  }
+
+  tex = new Texture(filepath);
+
+  if (parent)
+  {
+    transform = GetComponent(Transform, parent);
+    transform->SetTextureScale(tex->GetAspect());
+
+    width = tex->GetWidth();
+    height = tex->GetHeight();
+  }
+}
+
 RTTR_REGISTRATION
 {
     using namespace rttr;
@@ -90,6 +115,6 @@ RTTR_REGISTRATION
         (
 
         )
-      .property("filepath", &Sprite::filepath)
+      .property("filepath", &Sprite::GetFilepath, &Sprite::SetFilepath)
       ;
 }

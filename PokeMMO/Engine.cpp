@@ -5,6 +5,8 @@
 #include <imgui.h>
 #include <examples/imgui_impl_glfw.h>
 #include <examples/imgui_impl_opengl3.h>
+#include <rttr/array_range.h>
+#include <rttr/type.h>
 
 #include "GraphicsEngine.h"
 #include "Logger.h"
@@ -66,31 +68,10 @@ void Engine::Init()
   obj->AddComponent<Transform>();
   obj->AddComponent<Sprite>("../Textures/player.png");
 
-  /*
-  obj2->AddComponent<Transform>();
-  obj2->AddComponent<Sprite>("../Textures/Pokemon/Virizion.png");
-  obj2->AddComponent<Animation>();
-  */
-
-  //Transform* trubo = GetComponent(Transform, obj2);
-  //trubo->SetScale(glm::vec3(.5, .5, 1));
-
-  
-
   GameObjectFactory::GetInstance()->AddObject(obj);
   //GameObjectFactory::GetInstance()->AddObject(obj2);
   GameObjectFactory::GetInstance()->ParseObject("player");
   GameObjectFactory::GetInstance()->ParseObject("verizon");
-
-  /*
-  Animation* an = GetComponent(Animation, obj2);
-  an->SetRows(11);
-  an->SetCols(9);
-  an->SetNumFrames(93);
-  an->SetFrameTime(.1f);
-  an->SetFrameOrderComp({ -1,0,93 });
-  */
-
 }
 
 void Engine::Update()

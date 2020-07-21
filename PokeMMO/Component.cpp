@@ -3,6 +3,7 @@
 void Component::Init()
 {
   name = compName;
+  shouldDelete = false;
 }
 
 void Component::ParseInit()

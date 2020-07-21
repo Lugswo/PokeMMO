@@ -39,12 +39,22 @@ public:
   void SetComponentName(const std::string& str);
   void SetName(const std::string& str);
 
+  bool GetDelete()
+  {
+    return shouldDelete;
+  }
+
+  void SetDelete()
+  {
+    shouldDelete = true;
+  }
+
 protected:
   GameObject* parent;
   std::string compName;
   std::string name;
 
 private:
-
+  bool shouldDelete;
   RTTR_ENABLE()
 };

@@ -20,5 +20,12 @@ public:
 private:
   void SetVariable(const rttr::property&, Component*);
 
+  void MenuBar();
+
   static Editor* instance;
+
+  bool createObject, loadPrefab;
+
+  std::vector<std::string> objPaths;
+  std::vector<std::string> componentTypes;
 };

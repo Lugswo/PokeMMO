@@ -94,17 +94,20 @@ void GraphicsEngine::DrawSprite(const Sprite* s)
 
   const Transform* transform = s->GetTransform();
 
-  s->GetShader()->Uniform(s->GetTransform()->GetMatrix(), "transform");
-  shader->Uniform(0, "tex");
+  if (transform)
+  {
+    s->GetShader()->Uniform(s->GetTransform()->GetMatrix(), "transform");
+    shader->Uniform(0, "tex");
 
-  glActiveTexture(GL_TEXTURE0);
-  glBindTexture(GL_TEXTURE_2D, s->GetTexture()->GetTexture());
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, s->GetTexture()->GetTexture());
 
-  glBindVertexArray(s->GetVAO());
-  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, s->GetEBO());
-  glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+    glBindVertexArray(s->GetVAO());
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, s->GetEBO());
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
-  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+  }
 }
 
 void GraphicsEngine::Draw()

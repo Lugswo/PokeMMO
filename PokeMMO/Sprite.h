@@ -12,6 +12,7 @@
 class Sprite : public Component
 {
 public:
+  Sprite();
   void Init() override;
   void ParseInit() override;
   void Update(float dt) override;
@@ -67,6 +68,20 @@ public:
     tex->SetAspect(a);
     transform->SetTextureScale(tex->GetAspect());
   }
+
+  const std::string& GetFilepath() const
+  {
+    return filepath;
+  }
+
+  void SetFilepath(const std::string& file)
+  {
+    filepath = file;
+
+    SetTexture();
+  }
+
+  void SetTexture();
 
   void ChangeUV(const std::vector<float>& uvs);
 

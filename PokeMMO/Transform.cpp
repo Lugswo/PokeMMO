@@ -3,23 +3,23 @@
 #include <gtc/matrix_transform.hpp>
 #include <rttr/registration>
 
+Transform::Transform()
+{
+  SetComponentName("Transform");
+}
+
 void Transform::Init()
 {
-
-  SetComponentName("Transform");  mat = glm::mat4(1.f);
+  mat = glm::mat4(1.f);
   scale = glm::vec3(1.f);
   rot = 0.f;
   pos = glm::vec3(0.f);
-
 
   ParseInit();
 }
 
 void Transform::ParseInit()
 {
-
-  SetComponentName("Transform");
-
   tScale = glm::vec3(1.f);
 }
 

@@ -10,16 +10,18 @@ namespace Movement
   constexpr float SPEED = 1.f;
 };
 
+Player::Player()
+{
+  SetComponentName("Player");
+}
+
 void Player::Init()
 {
-
   ParseInit();
 }
 
 void Player::ParseInit()
 {
-
-  SetComponentName("Player");
   anim = GetComponent(Animation, parent);
   trans = GetComponent(Transform, parent);
   GameObjectFactory::GetInstance()->SetPlayerRef(parent);
