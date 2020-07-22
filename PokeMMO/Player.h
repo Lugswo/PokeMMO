@@ -3,6 +3,7 @@
 #include "Component.h"
 #include "Transform.h"
 #include "Animation.h"
+#include "Tile.h"
 
 class Player : public Component
 {
@@ -16,6 +17,10 @@ public:
 private:
   Transform* trans;
   Animation* anim;
+
+  Tile* currentTile;
+
+  bool isMoving;
 
   RTTR_ENABLE(Component)
 };

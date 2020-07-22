@@ -16,10 +16,7 @@ Animation::Animation()
 
 std::vector<float> Animation::CalculateUV()
 {
-
   unsigned r = frameOrderCurrent[currFrame] / col;
-
-
   unsigned c = frameOrderCurrent[currFrame] - (r * col);
 
   //float tru = (float)(c + 1) / (float)col;

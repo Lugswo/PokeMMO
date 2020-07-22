@@ -56,6 +56,8 @@ void Editor::Init()
   {
     componentTypes.push_back(comp.get_name().to_string());
   }
+
+  file.Init();
 }
 
 void Editor::MenuBar()
@@ -353,6 +355,14 @@ void Editor::Update(float dt)
       ImGui::PopStyleColor();
     }
   }
+
+  ImGui::End();
+
+  ImGui::SetNextWindowPos(ImVec2(1420, 0));
+  ImGui::SetNextWindowSize(ImVec2(500, 1080));
+  ImGui::Begin("Tile Editor", nullptr, ImGuiWindowFlags_MenuBar);
+
+  std::string tilePath = file.Explorer();
 
   ImGui::End();
 }

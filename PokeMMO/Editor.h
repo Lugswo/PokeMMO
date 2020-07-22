@@ -7,6 +7,7 @@
 
 #include "System.h"
 #include "GameObject.h"
+#include "FileExplorer.hpp"
 
 class Editor : public System
 {
@@ -28,4 +29,6 @@ private:
 
   std::vector<std::string> objPaths;
   std::vector<std::string> componentTypes;
+
+  FileExplorer file;
 };

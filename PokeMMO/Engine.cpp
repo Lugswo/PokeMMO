@@ -47,17 +47,24 @@ void Engine::Init()
   running = true;
   
   AddSystem<GameObjectFactory>();
+  AddSystem<GraphicsEngine>();
   AddSystem<Editor>();
   AddSystem<Camera>();
 
   AddSystem<ShaderManager>();
-    //  graphics goes last pls don't forget
-  AddSystem<GraphicsEngine>();
   AddSystem<InputManager>();
+
+    //  change this later
+  System* g = systems[1];
+  systems.erase(systems.begin() + 1);
+  System* input = systems.back();
+  systems.erase(systems.begin() + systems.size() - 1);
+  systems.push_back(g);
+  systems.push_back(input);
 
   // Setup Platform/Renderer bindings
   ImGui_ImplGlfw_InitForOpenGL(GraphicsEngine::GetInstance()->GetWindow()->GetWindow(), true);
-  ImGui_ImplOpenGL3_Init("#version 460");
+  ImGui_ImplOpenGL3_Init("#version 330");
   // Setup Dear ImGui style
   ImGui::StyleColorsDark();
 

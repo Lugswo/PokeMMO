@@ -41,6 +41,9 @@ void Serializer::Serialize(const GameObject* obj)
     w.Key("name");
     w.String(c->GetComponentName().c_str());
 
+    w.Key("compName");
+    w.String(c->GetName().c_str());
+
     rttr::type t = rttr::type::get_by_name(c->GetComponentName());
     rttr::variant var = c;
 
