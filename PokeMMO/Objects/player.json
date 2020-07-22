@@ -3,24 +3,27 @@
     "components": [
         {
             "name": "Transform",
+            "compName": "Transform",
             "pos": [
-                -0.9331215620040894,
-                0.42978397011756899,
+                0.0,
+                0.0,
                 0.0
             ],
             "scale": [
-                0.5,
-                0.5,
+                0.10000000149011612,
+                0.10000000149011612,
                 1.0
             ],
             "rotation": 0.0
         },
         {
             "name": "Sprite",
+            "compName": "Sprite",
             "filepath": "../Textures/Player/mPlayer.png"
         },
         {
             "name": "Animation",
+            "compName": "Animation",
             "row": 8,
             "col": 3,
             "frameTime": 0.20000000298023225,
@@ -89,7 +92,8 @@
             ]
         },
         {
-            "name": "Player"
+            "name": "Player",
+            "compName": "Player"
         }
     ]
 }

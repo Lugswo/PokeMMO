@@ -55,6 +55,9 @@
     <Filter Include="Source Files\Systems\Editor">
       <UniqueIdentifier>{ee13d2d0-4651-4d4f-bc11-d476a1bd5475}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Tiles">
+      <UniqueIdentifier>{6bd066b2-fcaa-42fc-b805-a1732ee7cb35}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -141,6 +144,12 @@
     <ClCompile Include="..\lib\imgui\examples\imgui_impl_opengl3.cpp">
       <Filter>Source Files\External</Filter>
     </ClCompile>
+    <ClCompile Include="Tile.cpp">
+      <Filter>Source Files\Tiles</Filter>
+    </ClCompile>
+    <ClCompile Include="FileExplorer.cpp">
+      <Filter>Source Files\Systems\Editor</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine.h">
@@ -201,6 +210,12 @@
       <Filter>Source Files\Systems\Serializer</Filter>
     </ClInclude>
     <ClInclude Include="Editor.h">
+      <Filter>Source Files\Systems\Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="Tile.h">
+      <Filter>Source Files\Tiles</Filter>
+    </ClInclude>
+    <ClInclude Include="FileExplorer.hpp">
       <Filter>Source Files\Systems\Editor</Filter>
     </ClInclude>
   </ItemGroup>
