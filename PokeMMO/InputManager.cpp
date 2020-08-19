@@ -76,6 +76,26 @@ bool InputManager::KeyRelease(int key)
 //
 //}
 
+bool InputManager::MouseClick(int button)
+{
+  return mouse[button].p;
+}
+
+bool InputManager::MouseDown(int button)
+{
+  return mouse[button].d;
+}
+
+//bool InputManager::MouseUp(int button)
+//{
+//  return 
+//}
+
+bool InputManager::MouseRelease(int button)
+{
+  return mouse[button].r;
+}
+
 void InputManager::PushKey(int key)
 {
   keyboard[key].p = keyboard[key].d = true;
@@ -88,4 +108,18 @@ void InputManager::RelKey(int key)
   keyboard[key].r = keyboard[key].u = true;
   keyboard[key].d = false;
   keysToUpdate.push_back(keyboard + key);
+}
+
+void InputManager::PushButton(int button)
+{
+  mouse[button].p = mouse[button].d = true;
+  mouse[button].u = false;
+  keysToUpdate.push_back(mouse + button);
+}
+
+void InputManager::RelButton(int button)
+{
+  mouse[button].r = mouse[button].u = true;
+  mouse[button].d = false;
+  keysToUpdate.push_back(mouse + button);
 }

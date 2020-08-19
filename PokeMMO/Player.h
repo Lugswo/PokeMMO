@@ -14,6 +14,12 @@ public:
   void Update(float dt) override;
   void Shutdown() override;
 
+  const Tile* GetCurrentTile() const
+  {
+    return currentTile;
+  }
+  void SetTile(Tile*);
+
 private:
   Transform* trans;
   Animation* anim;

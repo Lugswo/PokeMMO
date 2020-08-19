@@ -16,7 +16,7 @@ public:
 
   virtual void SetDepression(const std::string&) {};
 
-  GameObject* GetParent()
+  GameObject* GetParent() const
   {
     return parent;
   }
@@ -26,12 +26,12 @@ public:
     parent = obj;
   }
 
-  const std::string& GetComponentName()
+  const std::string& GetComponentName() const
   {
     return compName;
   }
 
-  const std::string& GetName()
+  const std::string& GetName() const
   {
     return name;
   }

@@ -8,30 +8,23 @@
 #include "GameObject.h"
 #include "Component.h"
 #include "Logger.h"
+#include "GameObjectFactory.h"
+#include "Map.h"
+#include "Transform.h"
+#include "Sprite.h"
+#include "Tile.h"
+#include "Editor.h"
 
 #pragma warning(disable : 4996)
 
 #define cSer comp[p.get_name().to_string().c_str()]
 
-void Serializer::Serialize(const GameObject* obj)
+void Serializer::SerializeObject(const GameObject* obj, rapidjson::PrettyWriter<rapidjson::FileWriteStream>& w)
 {
-  using namespace rapidjson;
-
-  FILE* fp = fopen("Objects/temp.json", "w");
-
-  if (!fp)
-  {
-    L::Log(TL::ERR, "Could not save file " + obj->GetFilename() + "!");
-  }
-
-  char writeBuffer[4096];
-  FileWriteStream os(fp, writeBuffer, sizeof(writeBuffer));
-
-  PrettyWriter<FileWriteStream> w(os);
   w.StartObject();
   w.Key("name");
   w.String(obj->GetName().c_str());
-  
+
   w.Key("components");
   w.StartArray();
 
@@ -60,6 +53,25 @@ void Serializer::Serialize(const GameObject* obj)
   w.EndArray();
 
   w.EndObject();
+}
+
+void Serializer::Serialize(const GameObject* obj)
+{
+  using namespace rapidjson;
+
+  FILE* fp = fopen("Objects/temp.json", "w");
+
+  if (!fp)
+  {
+    L::Log(TL::ERR, "Could not save file " + obj->GetFilename() + "!");
+  }
+
+  char writeBuffer[4096];
+  FileWriteStream os(fp, writeBuffer, sizeof(writeBuffer));
+
+  PrettyWriter<FileWriteStream> w(os);
+
+  SerializeObject(obj, w);
 
   std::string filename = "Objects/";
   filename += obj->GetFilename();
@@ -73,6 +85,258 @@ void Serializer::Serialize(const GameObject* obj)
 
   if (std::rename("Objects/temp.json", filename.c_str()) != 0)
     L::Log(TL::ERR, "Failed to rename file " + filename + "!");
+}
+
+void Serializer::SerializeTile(const GameObject* tile, rapidjson::PrettyWriter<rapidjson::FileWriteStream>& w)
+{
+  Transform* trans = GetComponent(Transform, tile);
+  glm::vec3 pos = trans->GetPosition();
+
+  Sprite* sprite = GetComponent(Sprite, tile);
+  std::string filepath = sprite->GetFilepath();
+
+  glm::vec2 u, v;
+  u = sprite->GetU();
+  v = sprite->GetV();
+
+  w.StartObject();
+
+  w.Key("pos");
+  Serialize(w, pos);
+
+  w.Key("file");
+  Serialize(w, filepath);
+  
+  w.Key("u");
+  Serialize(w, u);
+
+  w.Key("v");
+  Serialize(w, v);
+
+  w.EndObject();
+}
+
+void Serializer::SerializeMap(const std::string& name)
+{
+  using namespace rapidjson;
+
+  FILE* fp = fopen("Objects/temp.json", "w");
+
+  if (!fp)
+  {
+    L::Log(TL::ERR, "Could not save file " + name + "!");
+  }
+
+  char writeBuffer[4096];
+  FileWriteStream os(fp, writeBuffer, sizeof(writeBuffer));
+
+  PrettyWriter<FileWriteStream> w(os);
+  w.StartObject();
+  w.Key("name");
+  w.String(name.c_str());
+
+  w.Key("tiles");
+  w.StartArray();
+
+  auto tiles = GameObjectFactory::GetInstance()->GetAllTiles();
+
+  for (auto obj : tiles)
+  {
+    SerializeTile(obj, w);
+  }
+
+  w.EndArray();
+  
+  w.Key("objects");
+  w.StartArray();
+
+  auto objects = GameObjectFactory::GetInstance()->GetAllLevelObjects();
+
+  for (auto obj : objects)
+  {
+    w.String(obj->GetFilename().c_str());
+  }
+
+  w.EndArray();
+
+  w.EndObject();
+
+  std::string filename = "Maps/";
+  filename += name;
+  filename += ".json";
+
+  if (fp)
+    fclose(fp);
+
+  if (remove(filename.c_str()) != 0)
+    L::Log(TL::ERR, "Failed to delete file " + filename + "!");
+
+  if (std::rename("Objects/temp.json", filename.c_str()) != 0)
+    L::Log(TL::ERR, "Failed to rename file " + filename + "!");
+
+}
+
+void ConstructTiles(const rapidjson::Value& a, std::vector<std::vector<GameObject*>>& placedTiles)
+{
+  using namespace rapidjson;
+  for (SizeType i = 0; i < a.Size(); i++)
+  {
+    GameObject* obj = new GameObject("Tile");
+    Transform* trans = new Transform();
+    Sprite* sprite = new Sprite();
+    Tile* tile = new Tile();
+
+    obj->AddComponent(trans);
+    obj->AddComponent(sprite);
+    obj->AddComponent(tile);
+
+    obj->SetShowEditor(false);
+
+    trans->SetScale(glm::vec3(.075f, .075f, 0.f));
+
+    const Value& pos = a[i]["pos"];
+
+    float f[3];
+    for (SizeType j = 0; j < pos.Size(); ++j)
+    {
+      f[j] = pos[j].GetFloat();
+    }
+
+    glm::vec3 position(f[0], f[1], f[2]);
+    trans->SetPosition(position);
+
+    std::string filepath = a[i]["file"].GetString();
+    sprite->SetFilepath(filepath);
+
+    const Value& jsonU = a[i]["u"];
+
+    for (SizeType j = 0; j < jsonU.Size(); ++j)
+    {
+      f[j] = jsonU[j].GetFloat();
+    }
+
+    glm::vec2 u(f[0], f[1]);
+    sprite->SetU(u);
+
+    const Value& jsonV = a[i]["v"];
+
+    for (SizeType j = 0; j < jsonV.Size(); ++j)
+    {
+      f[j] = jsonV[j].GetFloat();
+    }
+
+    glm::vec2 v(f[0], f[1]);
+    sprite->SetV(v);
+
+    GameObjectFactory::GetInstance()->AddObject(obj);
+
+    glm::vec2 findTile = trans->GetPosition();
+    findTile.x /= .15f;
+    findTile.y /= .15f;
+
+    findTile.x = std::round(findTile.x);
+    findTile.y = std::round(findTile.y);
+
+    int x, y;
+    x = findTile.x;
+    y = -findTile.y;
+
+    x += 500;
+    y += 500;
+
+    findTile *= .15f;
+
+    if (!placedTiles[x][y])
+    {
+      Tile* t = GetComponent(Tile, obj);
+      placedTiles[x][y] = obj;
+
+      if (placedTiles[x + 1][y])
+      {
+        Tile* t2 = GetComponent(Tile, placedTiles[x + 1][y]);
+        t->SetRight(t2);
+        t2->SetLeft(t);
+      }
+      if (placedTiles[x - 1][y])
+      {
+        Tile* t2 = GetComponent(Tile, placedTiles[x - 1][y]);
+        t->SetLeft(t2);
+        t2->SetRight(t);
+      }
+      if (placedTiles[x][y + 1])
+      {
+        Tile* t2 = GetComponent(Tile, placedTiles[x][y + 1]);
+        t->SetDown(t2);
+        t2->SetUp(t);
+      }
+      if (placedTiles[x][y - 1])
+      {
+        Tile* t2 = GetComponent(Tile, placedTiles[x][y - 1]);
+        t->SetUp(t2);
+        t2->SetDown(t);
+      }
+    }
+  }
+}
+
+Map* Serializer::ParseMap(const std::string& file)
+{
+  using namespace rapidjson;
+
+  Document doc;
+  std::string filepath = "Maps/";
+  filepath += file;
+  filepath += ".json";
+
+  FILE* fp = fopen(filepath.c_str(), "rb"); // non-Windows use "r"
+
+  char readBuffer[65536];
+  FileReadStream is(fp, readBuffer, sizeof(readBuffer));
+
+  doc.ParseStream(is);
+
+  Map* map = nullptr;
+
+  //assert(doc.HasMember("name"));
+  //assert(doc["name"].IsString());
+  map = new Map();
+
+  assert(doc.HasMember("tiles"));
+  assert(doc["tiles"].IsArray());
+
+  const Value& a = doc["tiles"];
+  assert(a.IsArray());
+
+  if (Editor::GetInstance())
+  {
+    auto& placedTiles = Editor::GetInstance()->GetPlacedTiles();
+
+    Editor::GetInstance()->ResetTiles();
+
+    ConstructTiles(a, placedTiles);
+  }
+  else
+  {
+    std::vector<std::vector<GameObject*>> placedTiles;
+    placedTiles.reserve(1000);
+    for (int i = 0; i < 1000; ++i)
+    {
+      placedTiles.push_back(std::vector<GameObject*>());
+      placedTiles.back().reserve(1000);
+
+      for (int j = 0; j < 1000; ++j)
+      {
+        placedTiles.back().push_back(nullptr);
+      }
+    }
+
+    ConstructTiles(a, placedTiles);
+  }
+
+  if (fp)
+    fclose(fp);
+
+  return nullptr;
 }
 
 GameObject* Serializer::Parse(const std::string& file)

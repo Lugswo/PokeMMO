@@ -6,15 +6,14 @@
 Transform::Transform()
 {
   SetComponentName("Transform");
+  mat = glm::mat4(1.f);
+  rot = 0.f;
+  pos = glm::vec3(0.f);
+  scale = glm::vec3(1.f);
 }
 
 void Transform::Init()
 {
-  mat = glm::mat4(1.f);
-  scale = glm::vec3(1.f);
-  rot = 0.f;
-  pos = glm::vec3(0.f);
-
   ParseInit();
 }
 
@@ -55,6 +54,12 @@ RTTR_REGISTRATION
         (
 
         )
+      .constructor<const rttr::variant*>()
+      (
+
+        )
+
+
       // register directly a member object pointer; mark it as 'private'
       .property("pos", &Transform::GetPosition, &Transform::SetPosition)
       .property("scale", &Transform::GetScale, &Transform::SetScale)

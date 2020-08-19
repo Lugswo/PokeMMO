@@ -9,6 +9,7 @@ class GameObject
 {
 public:
   GameObject(const std::string& name);
+  GameObject(const GameObject&);
   ~GameObject();
 
   void Update(float dt);
@@ -29,7 +30,7 @@ public:
 
   void AddComponent(Component* c);
 
-  Component* GetComponent(const std::string& str);
+  Component* GetComponent(const std::string& str) const;
 
   const std::string& GetName() const
   {
@@ -65,10 +66,20 @@ public:
   {
     shouldDelete = true;
   }
+  
+  bool GetEditor() const
+  {
+    return showEditor;
+  }
+
+  void SetShowEditor(bool b)
+  {
+    showEditor = b;
+  }
 
 private:
   std::vector<Component *> components;
   std::string name, filename;
 
-  bool saved, shouldDelete;
+  bool saved, shouldDelete, showEditor;
 };

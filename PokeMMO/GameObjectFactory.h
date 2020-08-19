@@ -39,6 +39,10 @@ public:
   std::vector<GameObject*>& GetAllObjects();  
   const std::vector<const GameObject*> GetAllObjectsConst() const;
 
+  const std::vector<GameObject*> GetAllLevelObjects();
+
+  const std::vector<GameObject*> GetAllTiles();
+
 private:
   static GameObjectFactory* instance;
   std::vector<GameObject*> objects;

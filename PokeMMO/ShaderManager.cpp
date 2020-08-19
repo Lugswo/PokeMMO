@@ -17,16 +17,14 @@ ShaderManager* ShaderManager::GetInstance()
 
 void ShaderManager::Init()
 {
+  persp = glm::mat4(1.f);
 
+  persp = glm::perspective(45.f, 1920.f / 1080.f, .1f, 100.f);
 }
 
 void ShaderManager::Update(float dt)
 {
   auto view = Camera::GetInstance()->GetCamera();
-
-  glm::mat4 persp = glm::mat4(1.f);
-
-  persp = glm::perspective(45.f, 1920.f / 1080.f, .1f, 100.f);
 
   for (auto& sh : shaders)
   {

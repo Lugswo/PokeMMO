@@ -14,6 +14,16 @@ public:
   void Init();
   const std::string& Explorer();
 
+  void ResetPath()
+  {
+    selectedfile = "None";
+  }
+
+  bool GetClicked() const
+  {
+    return clicked;
+  }
+
 private:
   void EnterDirectory(const std::string&);
 
@@ -25,5 +35,5 @@ private:
   Texture filetex;
   Texture foldtex;
 
-  bool open;
+  bool open, clicked;
 };

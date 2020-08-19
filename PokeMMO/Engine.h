@@ -13,6 +13,11 @@ public:
   static void Update();
   static void Shutdown();
 
+  static bool IsEditor()
+  {
+    return editor;
+  }
+
 private:
   Engine();
   ~Engine();
@@ -26,6 +31,8 @@ private:
   static std::vector<System*> systems;
 
   static bool running;
+
+  constexpr static bool editor = true;
 };
 
 #define make_game int main() { Engine::Init(); Engine::Update(); Engine::Shutdown(); return 0; }

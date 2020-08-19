@@ -10,15 +10,23 @@
 #include <filewritestream.h>
 #include <document.h>
 
+#include "Map.h"
+
 class Serializer
 {
 public:
   static void Serialize(const GameObject* obj);
+  static void SerializeMap(const std::string& name);
   static GameObject* Parse(const std::string& file);
+  static Map* ParseMap(const std::string& file);
 
 private:
+  static void SerializeObject(const GameObject* obj, rapidjson::PrettyWriter<rapidjson::FileWriteStream>& w);
   static void Serialize(rapidjson::PrettyWriter<rapidjson::FileWriteStream>& w, rttr::variant& r);
   static void Parse(rttr::variant& v, const rapidjson::Value& comp, rttr::variant& cVar, const rttr::property& p);
+
+  static void SerializeTile(const GameObject* tile, rapidjson::PrettyWriter<rapidjson::FileWriteStream>& w);
+  static void ParseTile();
 
   template <typename T>
   static void Serialize(rapidjson::PrettyWriter<rapidjson::FileWriteStream>& w, rttr::variant& r)

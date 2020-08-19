@@ -2,14 +2,22 @@
 
 #include <glm.hpp>
 
-class Tile
+#include "GameObject.h"
+#include "Component.h"
+#include "Transform.h"
+#include "Sprite.h"
+
+class Tile : public Component
 {
 public:
   Tile();
   ~Tile();
 
+  void Init() override;
+  void ParseInit() override;
+
+  const Transform* GetTransform() const;
   const glm::vec3& GetPosition() const;
-  void SetPosition(const glm::vec3&);
 
   Tile* GetUp() const;
   void SetUp(Tile*);
@@ -24,6 +32,16 @@ public:
   void SetDown(Tile*);
 
 private:
-  glm::vec3 position;
+  Transform* trans;
   Tile* up, * down, * left, * right;
 };
+
+//class Serializable()
+//{
+//  void Serialize();
+//}
+//
+//class Nonserializable : Serializable
+//{
+//  int guy;
+//};

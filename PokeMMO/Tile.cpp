@@ -1,18 +1,54 @@
 #include "Tile.h"
 
+#include "GameObjectFactory.h"
+#include "Sprite.h"
+
+//Tile::Tile(const std::string& filepath, const glm::vec2& u, const glm::vec2& v, const glm::vec3& pos)
+//{
+//  up = down = left = right = nullptr;
+//
+//  Transform* trans = GetComponent(Transform, parent);
+//  trans->SetPosition(pos);
+//
+//  Sprite* sprite = GetComponent(Sprite, parent);
+//  sprite->SetFilepath(filepath);
+//
+//  std::vector<float> uvs;
+//  uvs.push_back(v.x);
+//  uvs.push_back(v.y);
+//  uvs.push_back(v.x);
+//  uvs.push_back(u.y);
+//  uvs.push_back(u.x);
+//  uvs.push_back(u.y);
+//  uvs.push_back(u.x);
+//  uvs.push_back(v.y);
+//
+//  sprite->ChangeUV(uvs);
+//}
+
 Tile::Tile()
 {
-  up = down = left = right = nullptr;
+  SetComponentName("Tile");
+}
+
+void Tile::Init()
+{
+  ParseInit();
+}
+
+void Tile::ParseInit()
+{
+  trans = GetComponent(Transform, parent);
+}
+
+const Transform* Tile::GetTransform() const
+{
+  return trans;
 }
 
 const glm::vec3& Tile::GetPosition() const
 {
-  return position;
-}
-
-void Tile::SetPosition(const glm::vec3& p)
-{
-  position = p;
+  return trans->GetPosition();
 }
 
 Tile* Tile::GetUp() const

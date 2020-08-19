@@ -2,6 +2,7 @@
 
 #include "Logger.h"
 #include "Serializer.h"
+#include "Tile.h"
 
 GameObjectFactory* GameObjectFactory::instance;
 
@@ -50,6 +51,38 @@ const std::vector<const GameObject*> GameObjectFactory::GetAllObjectsConst() con
     constObjects.emplace_back(g);
   }
   return constObjects;
+}
+
+const std::vector<GameObject*> GameObjectFactory::GetAllLevelObjects()
+{
+  std::vector<GameObject*> levelObjs;
+  levelObjs.reserve(objects.size());
+
+  for (auto obj : objects)
+  {
+    if (obj->GetEditor())
+    {
+      levelObjs.push_back(obj);
+    }
+  }
+
+  return levelObjs;
+}
+
+const std::vector<GameObject*> GameObjectFactory::GetAllTiles()
+{
+  std::vector<GameObject*> tiles;
+  tiles.reserve(objects.size());
+
+  for (auto obj : objects)
+  {
+    if (GetComponent(Tile, obj))
+    {
+      tiles.push_back(obj);
+    }
+  }
+
+  return tiles;
 }
 
 std::vector<GameObject*>& GameObjectFactory::GetAllObjects()

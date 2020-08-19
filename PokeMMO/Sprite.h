@@ -13,6 +13,7 @@ class Sprite : public Component
 {
 public:
   Sprite();
+
   void Init() override;
   void ParseInit() override;
   void Update(float dt) override;
@@ -83,7 +84,30 @@ public:
 
   void SetTexture();
 
+  const glm::vec2& GetU() const
+  {
+    return u;
+  }
+
+  void SetU(const glm::vec2& uu)
+  {
+    u = uu;
+    ChangeUV(u, v);
+  }
+
+  const glm::vec2& GetV() const
+  {
+    return v;
+  }
+
+  void SetV(const glm::vec2& vv)
+  {
+    v = vv;
+    ChangeUV(u, v);
+  }
+
   void ChangeUV(const std::vector<float>& uvs);
+  void ChangeUV(const glm::vec2& u, const glm::vec2& v);
 
 private:
   unsigned VAO, VBO, EBO;
@@ -102,9 +126,12 @@ private:
     1, 2, 3    // second triangle
   };
 
+  void SetupBuffers();
+
   bool draw;
 
   const Shader* shader;
+  std::string shaderName;
   Texture* tex;
 
   Transform* transform;
@@ -112,6 +139,8 @@ private:
   std::string filepath;
 
   unsigned width, height;
+
+  glm::vec2 u, v;
 
   RTTR_ENABLE(Component)
   RTTR_REGISTRATION_FRIEND

@@ -13,28 +13,30 @@ void FileExplorer::Init()
 {
   currpath = "../Textures";
   selectedfile = "None";
-  open = false;
+  open = clicked = false;
 
   EnterDirectory(currpath);
 }
 
 const std::string& FileExplorer::Explorer()
 {
+  clicked = false;
+
   char path[2048];
   strcpy(path, selectedfile.c_str());
   ImGui::InputText("Filepath", path, 2048);
 
   ImGui::SameLine();
 
-  if (ImGui::ImageButton((ImTextureID)foldtex.GetTexture(), ImVec2(30, 30)))
+  if (ImGui::ImageButton((ImTextureID)foldtex.GetTexture(), ImVec2(30, 30), ImVec2(0, 1), ImVec2(1, 0)))
   {
     open = true;
   }
 
   if (open)
   {
-    bool b = onUpdate();
-    if (b)
+    clicked = onUpdate();
+    if (clicked)
     {
       open = false;
     }
@@ -133,7 +135,7 @@ bool FileExplorer::onUpdate()
 
     ImGui::PushID(i);
 
-    if (ImGui::ImageButton((ImTextureID)foldtex.GetTexture(), ImVec2(50, 50)))
+    if (ImGui::ImageButton((ImTextureID)foldtex.GetTexture(), ImVec2(50, 50), ImVec2(0, 1), ImVec2(1, 0)))
     {
       buttonlast = true;
       dir = folders[i];
@@ -162,22 +164,25 @@ bool FileExplorer::onUpdate()
       count = 0;
   }
 
+  static std::string fingle;
+
   for (int i = 0; i < files.size(); ++i)
   {
     ImGui::BeginGroup();
 
     ImGui::PushID(i);
 
-    if (ImGui::ImageButton((ImTextureID)filetex.GetTexture(), ImVec2(50, 50)))
+    if (ImGui::ImageButton((ImTextureID)filetex.GetTexture(), ImVec2(50, 50), ImVec2(0, 1), ImVec2(1, 0)))
     {
       filelast = true;
+      fingle = files[i];
     }
 
     if (dbl)
     {
       if (filelast)
       {
-        selectedfile = currpath + files[i];
+        selectedfile = currpath + "/" + fingle;
         getfile = true;
         filelast = false;
       }

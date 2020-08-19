@@ -21,8 +21,16 @@ public:
   bool KeyRelease(int key);
   bool KeyRelease(int key, int key2);
 
+  bool MouseClick(int button);
+  bool MouseDown(int button);
+  bool MouseUp(int button);
+  bool MouseRelease(int button);
+
   void PushKey(int key);
   void RelKey(int key);
+
+  void PushButton(int button);
+  void RelButton(int button);
 
   static InputManager* GetInstance()
   {

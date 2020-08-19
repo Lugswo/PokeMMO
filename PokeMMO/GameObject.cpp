@@ -9,8 +9,26 @@ GameObject::GameObject(const std::string& n)
 {
   name = n;
   filename = n;
-  saved = true;
+  saved = showEditor = true;
   shouldDelete = false;
+}
+
+GameObject::GameObject(const GameObject& o)
+{
+  for (auto c : o.components)
+  {
+    rttr::type t = rttr::type::get_by_name(c->GetComponentName());
+    rttr::variant* toAdd = new rttr::variant();
+    
+    *toAdd = t.create({ toAdd });
+    Component* componentPtr = toAdd->get_value<Component*>();
+
+    AddComponent(componentPtr);
+  }
+
+  name = o.name;
+  filename = o.filename;
+  saved = o.saved;
 }
 
 GameObject::~GameObject()
@@ -74,7 +92,7 @@ void GameObject::AddComponent(Component* c)
   components.push_back(c);
 }
 
-Component* GameObject::GetComponent(const std::string& str)
+Component* GameObject::GetComponent(const std::string& str) const
 {
   for (auto c : components)
   {

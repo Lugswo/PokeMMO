@@ -10,6 +10,9 @@
 #include "Logger.h"
 #include "InputManager.h"
 
+// get rid of later
+#include "GameObjectFactory.h"
+
 GraphicsEngine* GraphicsEngine::instance = nullptr;
 
 namespace Graphics
@@ -46,6 +49,14 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
     InputManager::GetInstance()->RelKey(key);
 }
 
+void mouse_button_callback(GLFWwindow* window, int button, int action, int mods) 
+{
+  if (action == GLFW_PRESS)
+    InputManager::GetInstance()->PushButton(button);
+  else if (action == GLFW_RELEASE)
+    InputManager::GetInstance()->RelButton(button);
+}
+
 void GraphicsEngine::Init()
 {
   glfwInit();
@@ -62,6 +73,7 @@ void GraphicsEngine::Init()
   }
 
   glfwSetKeyCallback(window->GetWindow(), key_callback);
+  glfwSetMouseButtonCallback(window->GetWindow(), mouse_button_callback);
 
   stbi_set_flip_vertically_on_load(true);
 
@@ -116,6 +128,9 @@ void GraphicsEngine::Draw()
   {
     DrawSprite(s);
   }
+
+  GameObject* player = GameObjectFactory::GetInstance()->GetPlayer();
+  DrawSprite(GetComponent(Sprite, player));
 
   drawQueue.clear();
 }

@@ -23,14 +23,12 @@
 #include "Player.h"
 #include "Animation.h"
 
-constexpr float nano = 1000000000.f;
+constexpr static float nano = 1000000000.f;
 
 std::chrono::time_point<std::chrono::high_resolution_clock> Engine::beginFrame;
 bool Engine::running;
 float Engine::dt = 0.f;
 std::vector<System*> Engine::systems;
-
-GameObject *obj = new GameObject("Test");
 
 //GameObject *obj2 = new GameObject("verizon");
 
@@ -48,7 +46,12 @@ void Engine::Init()
   
   AddSystem<GameObjectFactory>();
   AddSystem<GraphicsEngine>();
-  AddSystem<Editor>();
+
+  if (editor)
+  {
+    AddSystem<Editor>();
+  }
+
   AddSystem<Camera>();
 
   AddSystem<ShaderManager>();
@@ -71,12 +74,8 @@ void Engine::Init()
   ShaderManager::GetInstance()->AddShader("FSQ.vs", "FSQ.fs", "FSQ");
   ShaderManager::GetInstance()->AddShader("Normal.vs", "Normal.fs", "Normal");
 
-  
-  obj->AddComponent<Transform>();
-  obj->AddComponent<Sprite>("../Textures/player.png");
-
-  GameObjectFactory::GetInstance()->AddObject(obj);
-  //GameObjectFactory::GetInstance()->AddObject(obj2);
+    //GameObjectFactory::GetInstance()->AddObject(obj2);
+  GameObjectFactory::GetInstance()->ParseObject("Test");
   GameObjectFactory::GetInstance()->ParseObject("player");
   GameObjectFactory::GetInstance()->ParseObject("verizon");
 }
@@ -104,6 +103,7 @@ void Engine::Update()
     {
       if ((*itr)->ShouldDelete())
       {
+        delete (*itr);
         itr = objects.erase(itr);
       }
       else

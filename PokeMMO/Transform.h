@@ -9,6 +9,14 @@ class Transform : public Component
 {
 public:
   Transform();
+  Transform(const rttr::variant* c)
+  {
+    if (c->can_convert<Transform*>())
+    {
+      Transform* t = c->convert<Transform*>();
+      *this = *t;
+    }
+  }
   void Init() override;
   void ParseInit() override;
   void Shutdown() override;
